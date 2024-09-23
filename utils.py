@@ -10,11 +10,18 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_openai.chat_models import ChatOpenAI
 from pydantic import BaseModel
+from configs import *
 # Carregar diretamente da variável de ambiente
 import os
-from configs import *
+import dotenv
+from dotenv import load_dotenv, find_dotenv
+
+
+_ = load_dotenv(find_dotenv())
+
 
 def carrega_vector_store():
+
     embedding_model = OpenAIEmbeddings()
 
     # Carregar o FAISS index salvo no diretório
@@ -27,8 +34,7 @@ def cria_chain_conversa():
     vector_store = carrega_vector_store()
 
     # Passar diretamente a chave da API como variável de ambiente
-    api_key = os.getenv("sk-proj-GAuTPuu0TqzXLnihi4g9T3BlbkFJBqgZFim7xFsYhtRKLXVJ")  # ou substituir por os.environ['OPENAI_API_KEY'] se necessário garantir a existência
-    chat = ChatOpenAI(model=get_config('model_name'), openai_api_key=api_key)
+    chat = ChatOpenAI(model=get_config('model_name'))
 
     memory = ConversationBufferMemory(
         return_messages=True,

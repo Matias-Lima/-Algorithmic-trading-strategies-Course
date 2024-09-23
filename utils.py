@@ -9,39 +9,40 @@ from langchain_community.vectorstores.faiss import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_openai.chat_models import ChatOpenAI
-
-from dotenv import load_dotenv, find_dotenv
-
-from configs import *
-
-_ = load_dotenv(find_dotenv())
-
+from pydantic import BaseModel
+# Carregar diretamente da variável de ambiente
 import os
+from configs import *
 
 def carrega_vector_store():
     embedding_model = OpenAIEmbeddings()
-    
+
     # Carregar o FAISS index salvo no diretório
     vector_store = FAISS.load_local("Algorithmic_Trading", embedding_model, allow_dangerous_deserialization=True)
-    
+
     return vector_store
 
 
 def cria_chain_conversa():
-
     vector_store = carrega_vector_store()
 
-    chat = ChatOpenAI(model=get_config('model_name'))
+    # Passar diretamente a chave da API como variável de ambiente
+    api_key = os.getenv("sk-proj-GAuTPuu0TqzXLnihi4g9T3BlbkFJBqgZFim7xFsYhtRKLXVJ")  # ou substituir por os.environ['OPENAI_API_KEY'] se necessário garantir a existência
+    chat = ChatOpenAI(model=get_config('model_name'), openai_api_key=api_key)
+
     memory = ConversationBufferMemory(
         return_messages=True,
         memory_key='chat_history',
         output_key='answer'
-        )
+    )
+    
     retriever = vector_store.as_retriever(
         search_type=get_config('retrieval_search_type'),
         search_kwargs=get_config('retrieval_kwargs')
     )
+    
     prompt = PromptTemplate.from_template(get_config('prompt'))
+    
     chat_chain = ConversationalRetrievalChain.from_llm(
         llm=chat,
         memory=memory,

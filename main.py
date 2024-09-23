@@ -64,9 +64,9 @@ if mode == "Navegação":
         if pagina_atual in subsecoes:
             return st.sidebar.radio("Subseções", subsecoes[pagina_atual])
         return None
-
     # Navegação das subseções
     subsecao = mostrar_subsecoes(pagina)
+  
     
     if pagina == "1 . Introdução":
         st.title("Introdução ao Algoritmo Trading")
@@ -77,8 +77,9 @@ if mode == "Navegação":
         Vamos explorar uma ampla gama de estratégias, divididas em dois grandes grupos: estratégias de reversão à média e estratégias de momentum. Cada categoria será explicada em detalhes, com ênfase tanto nas técnicas padrão de trading quanto nos fundamentos que justificam o funcionamento dessas estratégias.
 
         O objetivo é manter as estratégias simples e lineares, para evitar o risco de overfitting (ajuste excessivo dos dados) e data-snooping (enviesamento por exploração de dados), problemas comuns em estratégias mais complexas.
+                    
         Estratégias de Reversão à Média
-
+                    
         No campo das estratégias de reversão à média, cobriremos diversas técnicas estatísticas para detectar a reversão à média em séries temporais. Entre elas estão:
 
             Teste Dickey-Fuller Aumentado (ADF);
@@ -109,6 +110,7 @@ if mode == "Navegação":
             Spreads de futuros.
 
         Além disso, vamos discutir como a ascensão dos dark pools e do high-frequency trading pode tornar essas estratégias mais desafiadoras nos últimos anos.
+                    
         Estratégias de Momentum
 
         Por outro lado, as estratégias de momentum são guiadas por quatro principais fatores que impulsionam esse comportamento em ações e futuros. Veremos como extrair momentum a partir de séries temporais e entre diferentes ativos. Novas abordagens, como aquelas baseadas em eventos de notícias, sentimento de mercado, fluxo de ordens e trading de alta frequência, também serão exploradas.
@@ -116,14 +118,8 @@ if mode == "Navegação":
 
         Uma parte importante deste curso será dedicada a discutir as armadilhas comuns que podem fazer com que os resultados do trading ao vivo divergem significativamente dos backtests. Questões como overfitting e viés de sobrevivência serão abordadas.
 
-
-
-
-
         """)
       
-
-
     # Página: Arquitetura
     elif pagina == "Backtesting e Execução Automática":
         st.title("Backtesting and Automated Execution")

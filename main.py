@@ -36,7 +36,7 @@ if mode == "Navegação":
         subsecoes = {
             "2 . Backtesting e Execução Automática": [
                 "Introdução",
-                "Análise Técnica",
+                "A Importância do Backtesting",
                 "Análise Fundamentalista",
                 "Day Trading",
                 "Swing Trading"
@@ -77,7 +77,7 @@ if mode == "Navegação":
 
         O objetivo é manter as estratégias simples e lineares, para evitar o risco de overfitting (ajuste excessivo dos dados) e data-snooping (enviesamento por exploração de dados), problemas comuns em estratégias mais complexas.
                     
-        Estratégias de Reversão à Média
+        ### Estratégias de Reversão à Média
                     
         No campo das estratégias de reversão à média, cobriremos diversas técnicas estatísticas para detectar a reversão à média em séries temporais. Entre elas estão:
 
@@ -95,7 +95,8 @@ if mode == "Navegação":
         Técnicas de Trading com Reversão à Média
 
         Abordaremos as técnicas mais simples e eficazes para operar portfólios que seguem a reversão à média, como:
-
+                    
+            Linear
             Bandas de Bollinger;
             Filtro de Kalman.
 
@@ -110,30 +111,79 @@ if mode == "Navegação":
 
         Além disso, vamos discutir como a ascensão dos dark pools e do high-frequency trading pode tornar essas estratégias mais desafiadoras nos últimos anos.
                     
-        Estratégias de Momentum
+        ### Estratégias de Momentum
 
         Por outro lado, as estratégias de momentum são guiadas por quatro principais fatores que impulsionam esse comportamento em ações e futuros. Veremos como extrair momentum a partir de séries temporais e entre diferentes ativos. Novas abordagens, como aquelas baseadas em eventos de notícias, sentimento de mercado, fluxo de ordens e trading de alta frequência, também serão exploradas.
-        Armadilhas Comuns
+                    
+        ### Armadilhas Comuns
 
         Uma parte importante deste curso será dedicada a discutir as armadilhas comuns que podem fazer com que os resultados do trading ao vivo divergem significativamente dos backtests. Questões como overfitting e viés de sobrevivência serão abordadas.
 
         """)
       
     # Página: Arquitetura
-    elif pagina == "Backtesting e Execução Automática":
-        st.title("Backtesting and Automated Execution")
+    elif pagina == "2 . Backtesting e Execução Automática":
+        st.title("Backtesting e Execução Automática")
 
         if subsecao == "Introdução":
-            st.markdown("""
-            Aqui explicaremos os conceitos centrais do trading, incluindo análise técnica e fundamentalista, com diferentes estratégias para day trading e swing trading.
+            st.markdown("""                      
+Embora o foco deste curso esteja nas categorias específicas de estratégias, é fundamental abordar algumas considerações importantes e armadilhas comuns antes de iniciar o backtesting (teste retroativo). Ignorar essas questões pode tornar o backtest inútil ou, pior, enganoso, resultando em perdas financeiras significativas.
+
+O backtesting é o processo de testar uma estratégia de trading com dados históricos para avaliar seu desempenho. No entanto, para que esse teste seja válido, é crucial evitar certas armadilhas comuns. Se essas precauções não forem tomadas, o resultado do backtest pode não refletir com precisão o desempenho futuro de uma estratégia.
+                        
+### Importância da Significância Estatística
+
+Uma preocupação central no backtesting é a significância estatística dos resultados. Em outras palavras, até que ponto os resultados obtidos durante o teste podem ser considerados estatisticamente confiáveis? Para avaliar isso, utilizamos metodologias de testes de hipótese e simulações de Monte Carlo.
+
+   * Quanto mais operações (trades) de ida e volta forem realizadas no backtest, maior será a confiabilidade estatística.
+   * Mesmo que o backtest seja conduzido corretamente e com alta significância estatística, isso não garante que os retornos futuros serão previsíveis.
+
+### Mudanças de Regime
+
+Outro fator importante são as mudanças de regime no mercado. Mesmo uma estratégia que tenha funcionado bem no passado pode ser completamente ineficaz no futuro devido a alterações nas condições de mercado. No curso, vamos discutir alguns exemplos históricos em que essas mudanças de regime prejudicaram estratégias previamente bem-sucedidas.
+                        
+### Escolha da Plataforma de Software
+
+A escolha de uma plataforma de software adequada para realizar o backtest é outra consideração essencial que deve ser abordada desde o início. Uma plataforma eficiente pode aumentar significativamente sua produtividade, permitindo testar uma ampla gama de estratégias em diferentes classes de ativos.
+
+Além disso, uma boa plataforma de backtest ajuda a minimizar ou eliminar as armadilhas comuns, como overfitting (ajuste excessivo) e enviesamento de dados. Muitas vezes, a escolha da plataforma para backtesting está diretamente ligada à escolha de uma boa plataforma de execução automática, já que as melhores plataformas combinam ambas as funções.
+                        
             """)
 
-        elif subsecao == "Análise Técnica":
+        elif subsecao == "A Importância do Backtesting":
             st.markdown("""
-            A análise técnica envolve o estudo dos gráficos de preços e a utilização de indicadores técnicos para prever movimentos futuros.
+Backtesting é o processo de aplicar dados históricos a uma estratégia de trading para verificar como ela teria se comportado no passado. A ideia é que, se a estratégia funcionou bem com dados históricos, isso pode ser um indicativo de que ela também funcionará no futuro. A importância desse processo é evidente, especialmente quando desenvolvemos uma estratégia do zero. Queremos saber como ela teria performado antes de arriscarmos dinheiro real. Mesmo ao usar uma estratégia de uma publicação confiável, ainda é essencial realizar o backtesting por conta própria.
+                        
+### Por que fazer backtesting mesmo com estratégias publicadas?
+
+Existem várias razões pelas quais realizar seu próprio backtesting, mesmo com uma estratégia publicada, é crucial:
+
+1. Detalhes de Implementação Importam: Muitas vezes, a lucratividade de uma estratégia depende dos detalhes de sua implementação. Por exemplo:
+    * As ordens de compra ou venda devem ser enviadas como ordens de "mercado na abertura" ou como ordens de mercado logo após a abertura?
+    * Para contratos futuros, a ordem deve ser enviada antes do fechamento do mercado de ações (às 16h00) ou antes do fechamento do mercado futuro (às 16h15)?
+    * Devemos usar o preço de compra, de venda ou o último preço para acionar uma negociação?
+
+Esses detalhes, frequentemente ignorados em artigos publicados, podem afetar significativamente a lucratividade de uma estratégia quando ela é executada ao vivo. A única forma de garantir que implementamos esses detalhes corretamente em nosso sistema automatizado de execução é através do backtesting.
+
+2. Transformar Backtesting em Execução Automática: Idealmente, o programa que usamos para backtestar a estratégia pode ser facilmente transformado em um programa de execução automática, garantindo que a estratégia seja implementada exatamente como planejado.
+
+3. Evitar Armadilhas Comuns: O backtesting nos permite analisar de perto a estratégia e identificar possíveis armadilhas. Alguns exemplos:
+    * Em uma estratégia que envolve posições longas e curtas, consideramos o fato de que algumas ações podem ser difíceis de tomar emprestadas para vendas a descoberto?
+    * Em uma estratégia de pares entre mercados futuros, certificamos-nos de que os preços de fechamento dos dois mercados são registrados ao mesmo tempo?
+
+Cada mercado e estratégia tem seu próprio conjunto de armadilhas específicas, e geralmente essas armadilhas inflacionam o desempenho da estratégia no backtest, fazendo parecer mais lucrativa do que realmente foi.
+
+4. Teste Out-of-Sample (Fora da Amostra): Uma das grandes vantagens de fazer o backtesting de uma estratégia publicada é a possibilidade de realizar um verdadeiro teste fora da amostra. Isso significa testar o desempenho da estratégia em um período de tempo após sua publicação. Se os resultados forem ruins nesse período, é um sinal de que a estratégia pode ter funcionado apenas em um conjunto limitado de dados. Isso é mais importante do que parece. Alguns autores podem ajustar seus modelos para que pareçam bons mesmo com dados fora da amostra.
+
+5. Refinar e Melhorar a Estratégia: Ao backtestar uma estratégia, podemos encontrar maneiras de refiná-la, tornando-a mais lucrativa ou menos arriscada. O processo de backtesting deve seguir o método científico:
+        * Começamos com uma hipótese sobre uma oportunidade de arbitragem (baseada em nossa intuição ou em uma pesquisa).
+        * Em seguida, confirmamos ou refutamos essa hipótese com um backtest.
+        Se os resultados não forem bons, podemos modificar nossa hipótese e repetir o processo.
+
+Alterações simples, como ajustar o período de tempo para calcular a média móvel ou mudar o momento de entrada das ordens, podem melhorar significativamente o desempenho da estratégia.
             """)
 
-            mostrar_imagem("https://example.com/imagem_analise_tecnica.png", "Análise Técnica")
+
         elif subsecao == "Análise Fundamentalista":
             st.markdown("""
             A análise fundamentalista se concentra em avaliar o valor intrínseco de um ativo com base em dados econômicos e financeiros.

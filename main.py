@@ -53,8 +53,10 @@ if mode == "Navegação":
             "4 . Estratégias de Reversão à Média": [
                 "Introdução",
                 "Trading Pairs",
-                "Scalping",
-                "Estratégias de Rompimento"
+                "Bollinger Bands",
+                "Estratégias de Rompimento",
+                "Erros nos dados",
+                "Conclusão"
             ],
             "5 . Reversão à Média de Ações e ETFs": [
                 "Introdução",
@@ -69,6 +71,12 @@ if mode == "Navegação":
                 "Futures Intermarket Spreads"
             ],
             "7 . Estratégias de Momentum Interdiário": [
+                "Introdução",
+                "Tests for Time Series Momentum",
+                "Scalping",
+                "Futures Intermarket Spreads"
+            ],
+            "8 . Estratégias de Momentum Intradiário": [
                 "Introdução",
                 "Trading Pairs",
                 "Scalping",
@@ -495,9 +503,6 @@ if mode == "Navegação":
 
     elif pagina == "3 . Os Fundamentos da Reversão à Média":
         st.title("3 . Os Fundamentos da Reversão à Média")
-
-
-
 
 
 # ==================== Introdução ========================
@@ -938,32 +943,31 @@ if mode == "Navegação":
             colab_link = "https://colab.research.google.com/drive/1zkR1PxN3eLnRESlV03_idqVBPYy3VM1C?usp=sharing"  # Coloque o link do Colab aqui
             st.markdown(f"[Clique aqui para editar um exemplo no Colab]({colab_link})")
 
-
-
             # Johansen Test
             st.divider()
             st.markdown("""
-### Johansen Test for Cointegration**
+                ### Johansen Test for Cointegration
 
-O Johansen test é uma abordagem estatística usada para identificar relações de cointegração em séries temporais múltiplas. Diferentemente de testes como o CADF, que avaliam cointegração entre duas variáveis e são dependentes da ordem das séries, o Johansen test pode ser aplicado a mais de duas séries simultaneamente, determinando todas as combinações lineares possíveis que formam portfólios estacionários.
+                O Johansen test é uma abordagem estatística usada para identificar relações de cointegração em séries temporais múltiplas. Diferentemente de testes como o CADF, que avaliam cointegração entre duas variáveis e são dependentes da ordem das séries, o Johansen test pode ser aplicado a mais de duas séries simultaneamente, determinando todas as combinações lineares possíveis que formam portfólios estacionários.
 
-##### Fundamentos do Johansen Test
-1. **Generalização de Cointegração**: Amplia a análise para vetores de preços e matrizes de coeficientes. O número de relações de cointegração (r) é determinado pelo posto da matriz de coeficientes (Λ).
-2. **Estatísticas de Teste**:
-   - **Trace Statistic**: Testa hipóteses nulas de r ≤ k, onde k varia de 0 a (n-1), sendo n o número de séries.
-   - **Eigen Statistic**: Também avalia r ≤ k, mas com base na decomposição de autovalores de Λ.
+                ##### Fundamentos do Johansen Test
+                1. **Generalização de Cointegração**: Amplia a análise para vetores de preços e matrizes de coeficientes. O número de relações de cointegração (r) é determinado pelo posto da matriz de coeficientes (Λ).
+                2. **Estatísticas de Teste**:
+                - **Trace Statistic**: Testa hipóteses nulas de r ≤ k, onde k varia de 0 a (n-1), sendo n o número de séries.
+                - **Eigen Statistic**: Também avalia r ≤ k, mas com base na decomposição de autovalores de Λ.
 
-##### Exemplo 1: EWA e EWC
-- **Resultado**: Ambos os testes rejeitam a hipótese r = 0 (sem cointegração) e r ≤ 1, confirmando duas relações de cointegração entre os ETFs EWA e EWC.  
-- **Significado**: Mesmo com apenas duas séries, é possível formar dois portfólios estacionários com diferentes hedge ratios. O Johansen test elimina a dependência da ordem das variáveis, fornecendo diretamente todos os portfólios possíveis.
+                ##### Exemplo 1: EWA e EWC
+                - **Resultado**: Ambos os testes rejeitam a hipótese r = 0 (sem cointegração) e r ≤ 1, confirmando duas relações de cointegração entre os ETFs EWA e EWC.  
+                - **Significado**: Mesmo com apenas duas séries, é possível formar dois portfólios estacionários com diferentes hedge ratios. O Johansen test elimina a dependência da ordem das variáveis, fornecendo diretamente todos os portfólios possíveis.
 
-##### Exemplo 2: EWA, EWC e IGE
-- **Adição de uma terceira série**: Incluindo o ETF IGE, que representa ações de recursos naturais, o teste foi estendido para três séries.  
-- **Resultado**: Foram identificadas três relações de cointegração com 95% de certeza, permitindo a formação de múltiplos portfólios estacionários. Os autovalores e autovetores encontrados determinam os hedge ratios para cada portfólio.
+                ##### Exemplo 2: EWA, EWC e IGE
+                - **Adição de uma terceira série**: Incluindo o ETF IGE, que representa ações de recursos naturais, o teste foi estendido para três séries.  
+                - **Resultado**: Foram identificadas três relações de cointegração com 95% de certeza, permitindo a formação de múltiplos portfólios estacionários. Os autovalores e autovetores encontrados determinam os hedge ratios para cada portfólio.
 
-### Considerações Finais
-O Johansen test é uma ferramenta poderosa para estratégias de cointegração, especialmente ao lidar com múltiplas séries temporais. Sua independência em relação à ordem das séries e capacidade de identificar todas as combinações cointegradas tornam-no superior a métodos univariados em análises mais complexas.
-""")
+                ### Considerações Finais
+                O Johansen test é uma ferramenta poderosa para estratégias de cointegração, especialmente ao lidar com múltiplas séries temporais. Sua independência em relação à ordem das séries e capacidade de identificar todas as combinações cointegradas tornam-no superior a métodos univariados em análises mais complexas.
+                """)
+
             code = '''
 # Importações necessárias
 import yfinance as yf
@@ -1081,33 +1085,27 @@ Eigen vectors: [1.03947063 0.13619127] [-1.53822008  0.2337235 ]
             # Estratégia
             st.divider()
             st.markdown("""
-### Johansen Test for Cointegration**
+                ### Linear Mean-Reverting Trading on a Portfolio
 
-O Johansen test é uma abordagem estatística usada para identificar relações de cointegração em séries temporais múltiplas. Diferentemente de testes como o CADF, que avaliam cointegração entre duas variáveis e são dependentes da ordem das séries, o Johansen test pode ser aplicado a mais de duas séries simultaneamente, determinando todas as combinações lineares possíveis que formam portfólios estacionários.
+                No exemplo, o portfólio EWA-EWC-IGE, formado com o "melhor" autovetor do Johansen test, mostrou uma curta meia-vida, tornando-o adequado para estratégias de reversão à média. A estratégia testada consiste em acumular unidades do portfólio proporcionalmente ao Z-Score negativo do preço do portfólio. Aqui, o portfólio unitário é determinado pelos pesos do autovetor do Johansen test, funcionando de forma semelhante a um ETF ou fundo mútuo.
 
-##### Fundamentos do Johansen Test
-1. **Generalização de Cointegração**: Amplia a análise para vetores de preços e matrizes de coeficientes. O número de relações de cointegração (r) é determinado pelo posto da matriz de coeficientes (Λ).
-2. **Estatísticas de Teste**:
-   - **Trace Statistic**: Testa hipóteses nulas de r ≤ k, onde k varia de 0 a (n-1), sendo n o número de séries.
-   - **Eigen Statistic**: Também avalia r ≤ k, mas com base na decomposição de autovalores de Λ.
+                ##### Características da Estratégia
+                1. **Linearidade**: 
+                - A quantidade investida é proporcional ao Z-Score do portfólio, mas não ao valor de mercado total do investimento.
+                - Essa abordagem linear simplifica o modelo, removendo a necessidade de otimização de parâmetros e eliminando o viés de data-snooping.
 
-##### Exemplo 1: EWA e EWC
-- **Resultado**: Ambos os testes rejeitam a hipótese r = 0 (sem cointegração) e r ≤ 1, confirmando duas relações de cointegração entre os ETFs EWA e EWC.  
-- **Significado**: Mesmo com apenas duas séries, é possível formar dois portfólios estacionários com diferentes hedge ratios. O Johansen test elimina a dependência da ordem das variáveis, fornecendo diretamente todos os portfólios possíveis.
+                2. **Praticidade**:
+                - Embora útil para backtesting, a estratégia não é diretamente prática. Entrar ou sair de infinitas posições conforme pequenos movimentos de preço não é viável, e o capital máximo necessário não pode ser previsto com precisão.
 
-##### Exemplo 2: EWA, EWC e IGE
-- **Adição de uma terceira série**: Incluindo o ETF IGE, que representa ações de recursos naturais, o teste foi estendido para três séries.  
-- **Resultado**: Foram identificadas três relações de cointegração com 95% de certeza, permitindo a formação de múltiplos portfólios estacionários. Os autovalores e autovetores encontrados determinam os hedge ratios para cada portfólio.
+                3. **Significância Estatística**:
+                - Como a estratégia realiza posições continuamente e não depende de regras de entrada e saída complexas, os resultados têm maior significância estatística, reduzindo o impacto de eventos aleatórios no desempenho.
 
-### Considerações Finais
-O Johansen test é uma ferramenta poderosa para estratégias de cointegração, especialmente ao lidar com múltiplas séries temporais. Sua independência em relação à ordem das séries e capacidade de identificar todas as combinações cointegradas tornam-no superior a métodos univariados em análises mais complexas.
-""")
+                O backtesting dessa estratégia linear simples demonstra que lucros podem ser extraídos de séries de preços cointegradas sem viés de otimização, usando apenas propriedades intrínsecas da série, como a meia-vida. Embora não seja diretamente aplicável ao mercado real, o modelo oferece uma base para entender e avaliar estratégias de reversão à média.
+                """)
+
 
             colab_link = "https://colab.research.google.com/drive/1zkR1PxN3eLnRESlV03_idqVBPYy3VM1C?usp=sharing"  # Coloque o link do Colab aqui
             st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
-
-
-
 
 # ==================== Cointegração ========================
 
@@ -1173,7 +1171,7 @@ O Johansen test é uma ferramenta poderosa para estratégias de cointegração, 
 # ===================== Chapter 3 Implementing Mean Reversion Strategies =============
 
     elif pagina == "4 . Estratégias de Reversão à Média":
-        st.title("Chapter 3 Implementing Mean Reversion Strategies")
+        st.title("4 . Estratégias de Reversão à Média")
 
         if subsecao == "Introdução":
            st.markdown("""
@@ -1205,27 +1203,153 @@ O Johansen test é uma ferramenta poderosa para estratégias de cointegração, 
                 Estratégias de reversão à média requerem uma implementação cuidadosa para evitar armadilhas comuns, como viés de look-ahead e erros de dados. Embora os exemplos apresentados ignorem algumas dessas nuances para simplificar a explicação, os traders devem ajustar esses modelos para aplicações reais e robustas.
                 """)
 
-
-        elif subsecao == "Trading Pairs ":
-
-            
+        elif subsecao == "Trading Pairs":
+  
             st.markdown("""
-            Tape reading é uma técnica que envolve a leitura do fluxo de ordens e do livro de ofertas para prever movimentos de preços.
+            ### Trading Pairs Using Price Spreads, Log Price Spreads, or Ratios**
+
+            Estratégias de reversão à média podem usar spreads de preços, logaritmos de preços ou razões como sinais de negociação. O método tradicional utiliza o valor de mercado do portfólio formado por uma combinação linear de preços, onde os pesos são os hedge ratios derivados de regressões ou do Johansen test. Essa abordagem cria uma série estacionária que pode ser usada como sinal de trading.
+
+            ##### Comparação entre Sinais
+            1. **Price Spreads**:
+            - Simplifica a estratégia ao usar o spread direto entre preços.
+            - Requer hedge ratios fixos, mas pode ser menos eficaz se os preços das ações não estiverem escalados proporcionalmente.
+
+            2. **Log Price Spreads**:
+            - Considera os logaritmos dos preços, criando um portfólio estacionário com pesos de capital constantes.
+            - Exige reequilíbrio frequente para manter as proporções de capital fixas, o que pode aumentar custos operacionais.
+
+            3. **Ratios**:
+            - Útil quando os ativos não são verdadeiramente cointegrados, mas o spread é considerado reversível a curto prazo.
+            - Permite dispensar hedge ratios dinâmicos, simplificando o modelo.
+            - É especialmente vantajoso em cenários onde as diferenças de escala entre preços dificultam o uso de spreads, como no trading de pares com grandes discrepâncias de preço.
+
+            ##### Exemplos e Aplicações
+            - **GLD e USO**:
+            - Em um exemplo comparativo, spreads de preço com hedge ratios adaptativos superaram o uso de razões como sinais de negociação.
+            - **Trading de Moedas**:
+            - Pairs como EUR.GBP já representam uma razão, enquanto pares como MXN.NOK podem se beneficiar do uso de ratios, devido à ausência de estacionariedade verdadeira.
+
+            Cada abordagem tem seus méritos dependendo do contexto e das propriedades dos ativos negociados. Spreads de preço são preferíveis em ativos cointegrados, enquanto ratios podem ser mais eficazes em cenários onde os ativos não são verdadeiramente estacionários, simplificando o modelo e evitando reequilíbrios frequentes.
             """)
-            mostrar_imagem("https://example.com/imagem_tape_reading.png", "Tape Reading")
 
+            colab_link = "https://colab.research.google.com/drive/1ihcWiNwspG_qrUiPeZSstOl3PE9yfPc_?usp=sharing"  # Coloque o link do Colab aqui
+            st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
 
-        elif subsecao == "Scalping":
+        elif subsecao == "Bollinger Bands":
             st.markdown("""
-            Scalping é uma estratégia de curto prazo que busca obter pequenos lucros a partir de movimentos de preços muito pequenos.
+            ### Bollinger Bands 
+
+            A estratégia de reversão à média mais simples descrita até agora é a linear, na qual o número de unidades investidas em um portfólio estacionário é proporcional ao desvio do preço em relação à média móvel. Embora útil para testar a viabilidade da reversão à média, essa abordagem não é prática, pois não define um limite para o capital investido, deixando a estratégia vulnerável a desvios prolongados.
+
+            ##### Estratégia das Bandas de Bollinger
+            Para contornar essa limitação, utilizamos **Bollinger Bands**, que estabelecem limites baseados no desvio-padrão da média móvel. A estratégia funciona da seguinte maneira:
+            1. **Entrada**: Compra ou venda ocorre quando o preço se desvia **entryZscore** desvios-padrão acima ou abaixo da média móvel.
+            2. **Saída**: A posição é encerrada quando o preço retorna a **exitZscore** desvios-padrão da média. Algumas abordagens comuns:
+            - **exitZscore = 0**: Sai da posição quando o preço volta à média.
+            - **exitZscore = -entryZscore**: Sai da posição apenas quando o preço atinge o extremo oposto da banda, invertendo a posição.
+
+            ##### Parâmetros da Estratégia
+            - **entryZscore** e **exitZscore** são parâmetros livres, ajustáveis com otimização em um conjunto de treinamento.
+            - **Período de Look-back**: A média móvel e o desvio-padrão podem ser calculados com um período de look-back fixo ou ajustado com base na meia-vida da reversão à média.
+            - **Gestão de Capital e Risco**: A estratégia opera com posições discretas (long ou short), facilitando a alocação de capital e o gerenciamento de risco.
+
+            O uso de **Bollinger Bands** torna a estratégia de reversão à média mais prática e controlada, evitando exposição ilimitada a desvios prolongados. A escolha adequada dos parâmetros pode melhorar a robustez da estratégia e minimizar riscos associados a oscilações excessivas do mercado.
             """)
-            mostrar_imagem("https://example.com/imagem_scalping.png", "Scalping")
-        elif subsecao == "Estratégias de Rompimento":
+
+            colab_link = "https://colab.research.google.com/drive/1ihcWiNwspG_qrUiPeZSstOl3PE9yfPc_?usp=sharing"  # Coloque o link do Colab aqui
+            st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
+
+            st.divider()
+
+            st.markdown("""
+**Does Scaling-in Work?**
+
+A estratégia de **scaling-in** (ou averaging-in) consiste em aumentar gradualmente a posição em uma estratégia de reversão à média à medida que o preço se afasta da média. Essa abordagem permite capturar lucros parciais sempre que há uma pequena reversão, reduzindo o impacto de mercado para grandes posições e possibilitando ganhos mesmo quando a série de preços não é perfeitamente estacionária. Uma implementação comum usa múltiplos níveis de entrada e saída em **Bollinger Bands**, ajustando pontos de entrada **(entryZscore = 1, 2, 3...N)** e saída **(exitZscore = 0, 1, 2...N-1)**. No entanto, pesquisas sugerem que **scaling-in pode não ser a abordagem mais lucrativa**.
+
+### Comparação entre "All-in" e "Scaling-in"
+O estudo de **Schoenberg e Corwin (2010)** demonstra que entrar em múltiplos pontos **nunca** é a estratégia mais rentável em backtests. Eles argumentam que existe um nível ótimo único de entrada ("all-in") que maximiza os retornos.  
+O estudo compara três métodos em um cenário onde o preço oscila entre **L1** (nível inicial), **L2** (nível mais baixo antes da reversão) e **F** (preço final esperado):
+1. **All-in at L1**: Compra-se toda a posição em **L1**, independentemente de possíveis quedas adicionais.
+2. **All-in at L2**: Aguarda-se a queda para **L2** antes de comprar toda a posição.
+3. **Scaling-in**: Compra-se parte da posição em **L1** e o restante em **L2**, se o preço cair mais.
+
+### Conclusões do Estudo:
+- Se a probabilidade do preço cair até **L2** for baixa (**p < p̂**), **All-in at L1** é mais lucrativo.
+- Se a probabilidade do preço atingir **L2** for alta (**p > p̂**), **All-in at L2** é superior.
+- **Scaling-in nunca é o método mais lucrativo** em comparação com os dois anteriores.
+
+### Quando o Scaling-in Ainda Pode Funcionar?
+Apesar das evidências contra scaling-in em backtests, há fatores do mercado real que podem justificar seu uso:
+- **Volatilidade variável**: A hipótese do estudo assume uma volatilidade constante, mas na realidade, volatilidade muda ao longo do tempo, o que pode favorecer scaling-in.
+- **Melhoria no Sharpe Ratio**: Mesmo que os retornos absolutos sejam menores, scaling-in pode reduzir a volatilidade da estratégia e melhorar sua relação risco-retorno.
+- **Melhor desempenho fora da amostra**: Embora scaling-in pareça ineficaz nos dados de treinamento, pode superar o método "all-in" em ambientes de mercado dinâmicos.
+
+### Conclusão
+Embora **scaling-in** pareça intuitivo e ofereça vantagens como redução do impacto de mercado, estudos sugerem que **"all-in" em um único ponto de entrada otimizado gera retornos superiores**. No entanto, fatores como mudanças na volatilidade podem fazer com que scaling-in tenha um desempenho melhor em condições de mercado reais e fora da amostra. O ideal é testar diferentes abordagens antes de aplicá-las no trading ao vivo.
+""")
+
+        elif subsecao == "Kalman Filter":
+
             st.markdown("""
             Estratégias de rompimento envolvem a identificação e a negociação de momentos em que o preço ultrapassa níveis importantes de suporte ou resistência.
             """)
             mostrar_imagem("https://example.com/imagem_rompimento.png", "Estratégias de Rompimento")
 
+
+        elif subsecao == "Erros nos dados":
+            st.markdown("""
+**The Danger of Data Errors**
+
+Erros nos dados são especialmente prejudiciais para estratégias de reversão à média, tanto em **backtesting** quanto em **execução ao vivo**. Pequenos erros ou outliers nos preços históricos podem criar oportunidades fictícias de lucro, inflacionando os resultados do backtest. Por exemplo, se um preço erroneamente registrado for muito mais alto do que o real, a estratégia pode sugerir uma venda a descoberto lucrativa que nunca teria ocorrido no mercado real.
+
+### Impacto nos Backtests
+- **Reversão à Média**: Dados errôneos podem inflacionar lucros artificiais ao registrar preços fora do normal, criando sinais falsos de entrada e saída.  
+- **Estratégias de Momentum**: São menos afetadas, pois erros nos preços podem resultar em ordens de compra seguidas por perdas rápidas, reduzindo a performance do backtest.
+
+### Problemas em Execução ao Vivo
+- **Erros em Cotações Bid/Ask**: Se um erro inflacionar o preço de compra ou venda, uma estratégia pode enviar ordens erradas e gerar perdas reais.  
+- **Impacto em Pairs Trading e Arbitragem**: Essas estratégias dependem de pequenas diferenças nos preços entre ativos. Um erro em uma das cotações pode aumentar artificialmente o spread e acionar negociações incorretas.  
+  - Exemplo: Se o spread real entre dois ativos for $5, mas um erro fizer parecer que é $6, um trade equivocado pode ser executado, resultando em prejuízo.
+
+### Mitigação de Erros
+- **Uso de Feeds de Dados Confiáveis**: Dados errados de corretores podem gerar perdas inesperadas. Testes mostraram que feeds de terceiros, como **Bloomberg** ou até **Yahoo! Finance**, podem oferecer maior estabilidade e precisão.  
+- **Cancel-and-Correct Codes**: Alguns provedores utilizam códigos da bolsa para corrigir erros em tempo real, reduzindo impactos negativos na negociação.
+
+### Conclusão
+Dados errôneos são um risco oculto, especialmente para estratégias de **reversão à média** e **pairs trading**, onde pequenos erros podem gerar grandes impactos. A escolha de um fornecedor de dados confiável e o monitoramento contínuo da qualidade dos dados são essenciais para evitar perdas desnecessárias e garantir que estratégias sejam eficazes tanto no backtest quanto na execução real.
+""")
+
+        elif subsecao == "Conclusão":
+            st.markdown("""
+        ### Key Points: Mean-Reverting Strategies and Practical Considerations**
+
+        - **Construção de Portfólios**:  
+        - Para um portfólio de reversão à média com um **número fixo de ações**, utilize **séries de preços** para calcular os hedge ratios.  
+        - Para um portfólio com **valores de mercado fixos**, utilize **logaritmos dos preços**.  
+
+        - **Escolha entre Spreads e Ratios**:  
+        - Para **moedas e pares cambiais**, o **uso de razões (ratios)** pode ser mais eficaz do que spreads, especialmente quando não há cointegração perfeita.  
+
+        - **Ajustando-se a Mudanças no Mercado**:  
+        - O **hedge ratio, a média e o desvio padrão** podem mudar ao longo do tempo. Para lidar com isso, utilize um **período de look-back móvel** ou um **Filtro de Kalman**.  
+
+        - **Bollinger Bands e Scaling-in**:  
+        - A implementação prática de estratégias lineares de reversão à média pode ser feita com **Bandas de Bollinger** e **scaling-in**.  
+        - Embora **scaling-in** nem sempre seja ótimo em backtests, ele pode ser útil no **trading ao vivo**, onde a volatilidade e as probabilidades mudam.  
+
+        - **Uso do Kalman Filter**:  
+        - Para atualizar dinamicamente a **expectativa de preço** com base nos últimos negócios (preço e volume), o **Filtro de Kalman** pode ser empregado.  
+
+        - **Impacto de Erros nos Dados**:  
+        - Erros de dados podem **inflacionar artificialmente os resultados** de backtests em estratégias de **reversão à média**, mas afetam menos estratégias de **momentum**.  
+        - Estratégias baseadas em **spreads são altamente sensíveis** a pequenos erros de dados, tanto em backtests quanto em operações ao vivo.  
+
+        ### Conclusão
+        A escolha dos métodos corretos para definir hedge ratios, ajustar estratégias e evitar armadilhas como erros de dados pode fazer a diferença entre um modelo teórico viável e uma estratégia prática e rentável no mercado real.
+            """)
+
+          
 
 # ===================== Chapter 3 Implementing Mean Reversion Strategies =============
 
@@ -1332,6 +1456,80 @@ O Johansen test é uma ferramenta poderosa para estratégias de cointegração, 
                 Momentum é uma ferramenta poderosa para trading, especialmente em futuros e ações, mas requer atenção às suas fragilidades e ao contexto de aplicação. A distinção entre estratégias interday e intraday permite adaptar os modelos a diferentes dinâmicas de mercado, maximizando retornos enquanto minimiza riscos associados às vulnerabilidades recentemente descobertas.
                 """)
 
+        elif subsecao == "Tests for Time Series Momentum":
+
+            st.markdown("""
+            Tape reading é uma técnica que envolve a leitura do fluxo de ordens e do livro de ofertas para prever movimentos de preços.
+            """)
+            mostrar_imagem("https://example.com/imagem_tape_reading.png", "Tape Reading")        
+
+
+
+
+
+
+        elif subsecao == "Time Series Strategies":
+            st.markdown("""
+            Tape reading é uma técnica que envolve a leitura do fluxo de ordens e do livro de ofertas para prever movimentos de preços.
+            """)
+            mostrar_imagem("https://example.com/imagem_tape_reading.png", "Tape Reading")
+        elif subsecao == "Scalping":
+            st.markdown("""
+            Scalping é uma estratégia de curto prazo que busca obter pequenos lucros a partir de movimentos de preços muito pequenos.
+            """)
+            mostrar_imagem("https://example.com/imagem_scalping.png", "Scalping")
+
+
+
+
+        elif subsecao == "Futures Intermarket Spreads":
+            st.markdown("""
+                **Futures Intermarket Spreads**
+
+                Intermarket spreads em contratos futuros envolvem pares de ativos subjacentes diferentes. Embora seja difícil encontrar spreads com comportamento de reversão à média, existem alguns candidatos interessantes, especialmente em mercados inter-relacionados.
+
+                ### Exemplos de Spreads em Mercados de Energia
+                1. **Crack Spread (CL, RB e HO)**:
+                - Consiste em uma carteira formada por três contratos longos de WTI crude oil (CL), dois contratos short de gasolina (RB) e um contrato short de óleo de aquecimento (HO).
+                - Representa a relação entre a produção de derivados a partir do petróleo bruto, onde a proporção 3:2:1 reflete a produção média de refinarias.
+                - **Resultado do Teste ADF**: Não estacionário. Durante o período de 2007-2008, apresentou alta volatilidade e retornos negativos em estratégias de reversão à média.
+                - **Vantagem Operacional**: A NYMEX oferece uma cesta pronta para o crack spread, reduzindo os requisitos de margem em comparação com negociações separadas.
+
+                2. **Spread entre CL e BZ (1:1)**:
+                - Ambas as commodities representam petróleo bruto (WTI e Brent), sugerindo uma relação forte.
+                - **Resultado do Teste ADF**: Não estacionário, devido a fatores como:
+                    - Aumento da produção de petróleo nos EUA.
+                    - Gargalos nos oleodutos em Cushing, Oklahoma.
+                    - Questões geopolíticas, como o embargo ao petróleo iraniano, que impactaram o Brent (BZ) mais do que o WTI (CL).
+
+                ### Cuidados no Backtesting de Intermarket Spreads
+                1. **Sincronização de Preços**: Certifique-se de que os preços sejam registrados no mesmo horário. Antes de setembro de 2001, o Brent (BZ) era negociado na Intercontinental Petroleum Exchange em Londres, com horário de fechamento diferente do NYMEX, onde o WTI (CL) é negociado.
+                2. **Ajustes para USD**: Futuros podem exigir multiplicadores para converter os preços para dólares americanos, garantindo consistência nos cálculos.
+
+                ### Conclusão
+                Embora intermarket spreads sejam promissores em mercados relacionados, como energia, a falta de estacionariedade torna muitos deles inadequados para estratégias de reversão à média. A análise cuidadosa e a consideração de fatores como sincronização de preços são essenciais para evitar erros em backtests e estratégias.
+                """)
+
+            mostrar_imagem("https://example.com/imagem_rompimento.png", "Estratégias de Rompimento")
+
+# ===================== Chapter 6 Interday Momentum Strategies =============
+
+
+
+# ===================== Chapter 7 Interday Momentum Strategies ==================
+
+    elif pagina == "7 . Estratégias de Momentum Interdiário":
+        st.title("7 . Estratégias de Momentum Interdiário")
+        if subsecao == "Introdução":
+           st.markdown("""
+                **Momentum in Trading**
+
+                Momentum em preços de ativos tem quatro causas principais: persistência nos retornos de rolagem de futuros, lenta assimilação de novas informações, compras ou vendas forçadas por fundos e manipulação de mercado por traders de alta frequência. Esse fenômeno é classificado em dois tipos: **momentum temporal**, em que retornos passados estão positivamente correlacionados com retornos futuros, e **momentum cross-sectional**, em que ativos com desempenho superior a outros tendem a continuar superando. Estratégias de momentum interday, abordadas neste capítulo, mantêm posições por vários dias e podem explorar esses padrões. No entanto, elas apresentam fragilidades recentemente identificadas, que afetam menos as estratégias de momentum intraday, tema do próximo capítulo. Além disso, estratégias de momentum diferem significativamente de estratégias de reversão à média em propriedades, vantagens e desvantagens.
+
+                ### Considerações Finais
+                Momentum é uma ferramenta poderosa para trading, especialmente em futuros e ações, mas requer atenção às suas fragilidades e ao contexto de aplicação. A distinção entre estratégias interday e intraday permite adaptar os modelos a diferentes dinâmicas de mercado, maximizando retornos enquanto minimiza riscos associados às vulnerabilidades recentemente descobertas.
+                """)
+
 
         elif subsecao == "Tests for Time Series Momentum":
 
@@ -1384,12 +1582,7 @@ O Johansen test é uma ferramenta poderosa para estratégias de cointegração, 
 
             mostrar_imagem("https://example.com/imagem_rompimento.png", "Estratégias de Rompimento")
 
-# ===================== Chapter 6 Interday Momentum Strategies =============
-
-
-
-
-
+# ===================== Chapter 7 Interday Momentum Strategies =============
 
 
 
@@ -1422,7 +1615,6 @@ O Johansen test é uma ferramenta poderosa para estratégias de cointegração, 
             Existem várias abordagens para calcular a alavancagem ótima, sendo que a maioria delas se baseia na suposição de que a distribuição dos retornos futuros será semelhante à dos retornos passados. Embora essa premissa não seja completamente precisa, ela é amplamente utilizada em modelos quantitativos. A fórmula de Kelly, por exemplo, assume uma distribuição Gaussiana e oferece uma solução simples para calcular a alavancagem ideal que maximiza o crescimento composto, sem levar a uma perda total do capital (ruína).
             
             ---
-
                         
             """)
 
@@ -1551,14 +1743,14 @@ O Johansen test é uma ferramenta poderosa para estratégias de cointegração, 
             Essa técnica pode ser útil como complemento a métodos mais robustos, como simulações de Monte Carlo, especialmente quando aplicada em conjunto com validações cruzadas ou outros mecanismos para mitigar o viés de ajuste aos dados históricos.
             """)
 
-            st.markdown(r""" 
+            st.markdown(""" 
             ---             
 
             ### Drawdown
 
             Embora a alavancagem ótima deva maximizar o crescimento composto, muitos traders impõem restrições ao nível de drawdown, ou seja, a perda máxima permitida em relação ao valor do portfólio. Isso é feito para proteger o portfólio de perdas excessivas e manter o risco em níveis aceitáveis. Quando esse limite é estabelecido, o cálculo da alavancagem ótima deve ser ajustado para garantir que a perda máxima não seja ultrapassada.
 
-            Drawdown representa a redução percentual entre o valor máximo atingido pelo portfólio e o seu valor mínimo subsequente, antes que ele volte a crescer. Em outras palavras, é a maior queda sofrida pelo portfólio durante um determinado período. Por exemplo, se o valor do portfólio sobe para R$ 100 mil e em seguida cai para R$ 80 mil, o drawdown será de 20%.
+            Drawdown representa a redução percentual entre o valor máximo atingido pelo portfólio e o seu valor mínimo subsequente, antes que ele volte a crescer. Em outras palavras, é a maior queda sofrida pelo portfólio durante um determinado período. Por exemplo, se o valor do portfólio sobe para 100 mil e em seguida cai para 80 mil, o drawdown será de 20%.
 
             O drawdown é uma métrica crucial para avaliar o risco de uma estratégia de investimento ou trading. Ele permite entender não apenas o quanto uma estratégia pode perder em momentos de adversidade, mas também como isso pode impactar a capacidade do investidor de permanecer fiel ao plano inicial. Estratégias com drawdowns elevados podem ser insustentáveis a longo prazo, pois podem levar a decisões emocionais, como resgates antecipados ou abandonos de estratégias rentáveis.
 
@@ -1567,41 +1759,42 @@ O Johansen test é uma ferramenta poderosa para estratégias de cointegração, 
             ---                      
             """)
 
-            st.write(r"""
-            O método de **Constant Proportion Portfolio Insurance (CPPI)** oferece uma abordagem para equilibrar dois objetivos conflitantes: maximizar a taxa de crescimento composta enquanto limita o máximo drawdown. 
+            st.markdown("""
+                ### Constant Proportion Portfolio Insurance (CPPI)**
 
-            ### Conceito Básico
+                O método CPPI combina o objetivo de maximizar a taxa de crescimento composta com a limitação de perdas máximas (drawdown). Ele separa o capital total em duas partes: uma subconta alocada para negociação e uma conta em caixa. A subconta recebe uma alocação equivalente a uma proporção fixa **D** do capital total, e uma alavancagem **f** é aplicada apenas nessa subconta. Isso garante que o drawdown máximo não exceda **-D** do capital total.  
 
-            1. **Definição do Drawdown Máximo (\(D\))**:
-            - Aloca-se uma fração \(D\) do capital total em uma subconta de trading.
-            - O restante (\(1 - D\)) permanece em caixa.
+                ### Funcionamento do CPPI
+                1. **Alocação Inicial**:
+                - Aloca **D** do capital total para a subconta de negociação.
+                - O restante (**1-D**) permanece em caixa para proteger contra perdas.
+                2. **Reajuste do Capital**:
+                - Quando o capital total atinge um novo pico, a subconta é reajustada para manter a proporção **D**.  
+                - Em caso de perdas, o capital não é transferido da conta de caixa para a subconta.
+                3. **Encerramento da Estratégia**:
+                - Caso a subconta perca todo o seu capital, a estratégia é abandonada, servindo como um mecanismo automático de contenção de riscos.
 
-            2. **Alavancagem Ótima**:
-            - Aplica-se a alavancagem de Kelly (\(f\)) apenas à subconta de trading, garantindo que o drawdown máximo do portfólio total nunca exceda \(-D\).
+                ##### Comparação com Alavancagem Reduzida
+                Embora pareça semelhante ao uso de uma alavancagem reduzida (**fD**), o CPPI ajusta dinamicamente o tamanho das ordens, reduzindo o risco de atingir o drawdown máximo. Isso também evita o comportamento emocional no encerramento de estratégias.  
 
-            3. **Gestão Dinâmica**:
-            - Se o portfólio atinge um novo pico, o capital da subconta é ajustado para ser novamente \(D\) do total.
-            - Em caso de perdas, nenhum capital adicional é transferido para a subconta, e a estratégia é encerrada se o drawdown atinge \(-D\).
+                ##### Vantagens do CPPI
+                - Limitação do drawdown ao valor projetado (**-D**) por design.
+                - Taxa de crescimento composta similar a estratégias com alavancagem reduzida, mesmo após períodos longos.  
+                - Redução mais rápida do tamanho das posições em períodos de drawdown, protegendo o capital restante.
 
-            ### Vantagens do CPPI
+                ##### Limitações do CPPI
+                - Não oferece proteção contra grandes gaps de mercado ou suspensões de negociação. O uso de opções fora do dinheiro pode mitigar esse risco.  
+                - Deve ser aplicado a contas com apenas uma estratégia, pois estratégias não lucrativas podem ser "subsidiadas" por outras em contas multiestratégias, mascarando os drawdowns reais.
 
-            - **Controle do Drawdown**:
-            - O método limita o drawdown máximo por design, ao contrário de estratégias simples que aplicam alavancagem reduzida (\(f \cdot D\)) ao portfólio total.
+                O CPPI é uma abordagem eficiente para maximizar o crescimento composto enquanto limita drawdowns, oferecendo um método disciplinado e automático para controlar riscos. No entanto, é necessário atenção para lidar com eventos fora do controle, como gaps de mercado.
+                """)
+            
+            mostrar_imagem("img/cppi.png", "Constant Proportion Portfolio Insurance (CPPI)")
 
-            - **Resiliência em Cenários Negativos**:
-            - CPPI reduz a ordem de tamanho mais rapidamente durante drawdowns, minimizando riscos de perdas excessivas.
+            colab_link = "https://colab.research.google.com/drive/1oomGr66P92TigEEDKj5b7bkmaxkHSa_v?usp=sharing"  # Coloque o link do Colab aqui
+            st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
 
-            #### Comparação com Alavancagem Simples $$\(f \cdot D\)$$
-
-            - Embora a alavancagem reduzida também busque limitar o drawdown, ela não oferece a mesma proteção que o CPPI.
-            - Simulações mostram que o CPPI alcança uma taxa de crescimento composta semelhante à alavancagem simples (ex.: \(0.002484\) versus \(0.002525\) por dia em uma simulação de 100.000 dias com \(D = 0.5\)).
-            - Contudo, o CPPI apresenta drawdowns significativamente menores (\(<0.5\)), enquanto a alavancagem simples pode alcançar valores dolorosos como \(-0.9\).
-
-            #### Conclusão
-
-            O CPPI é uma estratégia robusta para limitar drawdowns e gerenciar portfólios de forma disciplinada, evitando decisões emocionais comuns em períodos de perdas. Embora apresente crescimento semelhante a estratégias alternativas, sua principal vantagem está no controle de riscos durante períodos de alta volatilidade.
-            """)
-
+            st.divider()
             st.write("""
     
             ### Conclusão
@@ -1610,32 +1803,88 @@ O Johansen test é uma ferramenta poderosa para estratégias de cointegração, 
 
             """)
 
-            mostrar_imagem("https://example.com/imagem_backtrader.png", "Backtrader")
-
         elif subsecao == "Indicadores e métricas":
             st.markdown("""    
             Os indicadores de risco proativos ajudam a evitar períodos desfavoráveis para estratégias de trading ao antecipar riscos. Diferentes indicadores são eficazes dependendo da estratégia utilizada:
 
-                VIX: O índice de volatilidade implícita é útil para identificar riscos. Em estratégias como buy-on-gap, um VIX acima de 35 pode indicar alta rentabilidade, enquanto para outras, como gap de abertura FSTX, ele sinaliza períodos a serem evitados.
+            ##### VIX:
+            O índice de volatilidade implícita é útil para identificar riscos. Em estratégias como buy-on-gap, um VIX acima de 35 pode indicar alta rentabilidade, enquanto para outras, como gap de abertura FSTX, ele sinaliza períodos a serem evitados.
 
-                TED Spread: Mede o risco de default bancário ao calcular a diferença entre a taxa LIBOR de três meses e os T-bills. É especialmente relevante em crises financeiras, como em 2008, quando atingiu níveis recordes.
+            ##### TED Spread:
+            Mede o risco de default bancário ao calcular a diferença entre a taxa LIBOR de três meses e os T-bills. É especialmente relevante em crises financeiras, como em 2008, quando atingiu níveis recordes.
 
-                Ativos de Risco: ETFs de high-yield bonds (HYG) e moedas emergentes, como o peso mexicano (MXN), funcionam como indicadores em crises específicas. O MXN, por exemplo, serviu como proxy para ativos arriscados durante a crise europeia de 2011.
+            ##### Ativos de Risco: 
+            ETFs de high-yield bonds (HYG) e moedas emergentes, como o peso mexicano (MXN), funcionam como indicadores em crises específicas. O MXN, por exemplo, serviu como proxy para ativos arriscados durante a crise europeia de 2011.
 
-                Fluxo de Ordens: Mudanças abruptas no fluxo de ordens indicam que informações importantes chegaram a investidores institucionais. Isso afeta negativamente ativos de risco (ações, commodities) e positivamente ativos seguros (USD, JPY, CHF).
+            ##### Fluxo de Ordens: 
+            Mudanças abruptas no fluxo de ordens indicam que informações importantes chegaram a investidores institucionais. Isso afeta negativamente ativos de risco (ações, commodities) e positivamente ativos seguros (USD, JPY, CHF).
 
-                Indicadores Específicos: Preços de commodities, como petróleo e ouro, são bons preditores para pair trading entre ETFs de produtores e mineradoras. O Índice Baltic Dry também pode antecipar riscos em países exportadores.
+            ##### Indicadores Específicos:
+            Preços de commodities, como petróleo e ouro, são bons preditores para pair trading entre ETFs de produtores e mineradoras. O Índice Baltic Dry também pode antecipar riscos em países exportadores.
 
             Apesar da eficácia desses indicadores, crises financeiras são raras, o que aumenta o risco de viés de seleção de dados em backtests. Além disso, eventos imprevisíveis, como desastres naturais, não podem ser antecipados. O fluxo de ordens, por atuar em alta frequência, é uma das ferramentas mais úteis para antecipar mudanças de mercado com precisão.
 
             Em resumo, combinar indicadores como VIX, TED Spread, fluxo de ordens e ativos específicos permite mitigar riscos e aumentar a eficácia de estratégias de trading. A escolha do indicador deve ser validada rigorosamente para evitar vieses e garantir sua confiabilidade.
                         
-            ### Stop Loss
+            #### Stop Loss
            
             Stop loss pode ser utilizado de duas maneiras: a mais comum é para sair de uma posição existente quando o lucro/prejuízo não realizado atinge um limite negativo, permitindo reentradas futuras. A segunda, menos comum, é usar o stop loss para encerrar completamente uma estratégia caso o drawdown ultrapasse um limite, o que é raro e pouco prático. O stop loss é eficaz apenas em mercados sempre abertos, pois gaps de preços após fechamentos podem resultar em perdas maiores. Em condições extremas, como na crise de liquidez durante o flash crash de 2010, o stop loss pode falhar completamente. Para estratégias de reversão à média, o stop loss pode parecer contraditório, pois se espera que os preços voltem ao normal, mas falha ao considerar mudanças permanentes no comportamento do mercado. Caso ocorra uma mudança de regime, o stop loss pode prevenir perdas catastróficas, sendo mais útil se configurado acima do drawdown máximo do backtest. Já estratégias de momentum se beneficiam logicamente do stop loss, pois perdas indicam reversão do momento, justificando a saída ou reversão da posição.
 
             """)
-            mostrar_imagem("https://example.com/imagem_quantconnect.png", "QuantConnect")
+            code_3 = '''
+import numpy as np
+import pandas as pd
+import yfinance as yf
+import matplotlib.pyplot as plt
+
+plt.style.use('dark_background')
+# Baixar os dados do portfólio
+ticker = "^GSPC"  # Altere para o ticker desejado
+
+data = yf.download(ticker, start="2015-01-01", end="2023-01-01")
+valor_carteira = data['Close']
+
+# Calcular o retorno diário
+portfolio_returns = valor_carteira.pct_change().dropna()
+
+# Calcular a volatilidade diária e anualizada
+daily_volatility = portfolio_returns.std()
+annualized_volatility = daily_volatility * np.sqrt(252)
+
+# Função para calcular o drawdown
+def calculate_drawdown(portfolio_values):
+    peaks = np.maximum.accumulate(portfolio_values)
+    drawdowns = (portfolio_values - peaks) / peaks
+    max_drawdown = np.min(drawdowns)
+    return drawdowns, max_drawdown
+
+drawdowns, max_drawdown = calculate_drawdown(valor_carteira)
+
+# Calcular o Sharpe Ratio
+risk_free_rate = 0.02  # Suponha uma taxa livre de risco anual de 2%
+daily_risk_free_rate = (1 + risk_free_rate) ** (1/252) - 1  # Ajustar para base diária
+excess_returns = portfolio_returns - daily_risk_free_rate
+sharpe_ratio = np.mean(excess_returns) / daily_volatility * np.sqrt(252)  # Ajustar para base anual
+
+# Retorno final
+final_return = (valor_carteira.iloc[-1] / valor_carteira.iloc[0] - 1) * 100
+
+# Exibir os resultados
+print(f"Volatilidade diária: {daily_volatility}")
+print(f"Volatilidade anualizada: {annualized_volatility}")
+print(f"Drawdown máximo: {max_drawdown}")
+print(f"Sharpe Ratio: {sharpe_ratio}")
+print(f"Retorno final: {final_return}%")
+
+            '''
+            
+            st.code(code_3, language="python")
+
+            colab_link = "https://colab.research.google.com/drive/1pjlRF6K4fteMMaeoqGqNluNaiQMO_oFU?usp=sharing"  # Coloque o link do Colab aqui
+            st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
+
+
+            mostrar_imagem("img/risk_ind.png", "Risk Indicators")
 
         elif subsecao == "Conclusão":
 
@@ -1755,6 +2004,23 @@ O Johansen test é uma ferramenta poderosa para estratégias de cointegração, 
         """)
 
 # ==================== Conclusão ========================
+
+# ==================== Referências ========================
+
+    elif pagina == "Referências":
+
+        st.title("Referências")
+
+        # Texto completo
+        st.write("""
+                 
+1. CHAN, Ernie. Algorithmic trading: winning strategies and their rationale. John Wiley & Sons, 2013.
+2. https://github.com/AnjayGoel/algorithmic-trading/tree/master       
+        
+        """)
+
+# ==================== Referências ========================
+
 
 
 # Se o modo for "Chat", "Debug" ou "Configuração", o conteúdo é carregado a partir dos arquivos

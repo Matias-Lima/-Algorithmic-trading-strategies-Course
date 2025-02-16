@@ -19,7 +19,7 @@ if mode == "Navegação":
         "Escolha uma seção", 
         [
             "1 . Introdução", 
-            "2 . Backtesting e Execução Automática", 
+            "2 . Backtesting", 
             "3 . Os Fundamentos da Reversão à Média", 
             "4 . Estratégias de Reversão à Média", 
             "5 . Reversão à Média de Ações e ETFs", 
@@ -34,13 +34,14 @@ if mode == "Navegação":
     # Função para exibir subseções
     def mostrar_subsecoes(pagina_atual):
         subsecoes = {
-            "2 . Backtesting e Execução Automática": [
+            "2 . Backtesting": [
                 "Introdução",
                 "A Importância do Backtesting",
                 "Armadilhas Comuns no Backtesting",
                 "Significância Estatística do Backtesting: Teste de Hipóteses",
                 "Quando não fazer Backtest em uma estratégia",
-                "Um Backtest Será Preditivo de Retornos Futuros?"
+                "Um Backtest Será Preditivo de Retornos Futuros?",
+                "Conclusão"
 
             ],
             "3 . Os Fundamentos da Reversão à Média": [
@@ -103,7 +104,7 @@ if mode == "Navegação":
 
 # ====================================================================================
 
-    # ==================== Introdução
+    # ==================== Introdução 
      
     if pagina == "1 . Introdução":
         st.title("Introdução ao Algoritmo Trading")
@@ -158,7 +159,7 @@ if mode == "Navegação":
         ---                       
         ### Armadilhas Comuns
 
-        Uma parte importante deste curso será dedicada a discutir as armadilhas comuns que podem fazer com que os resultados do trading ao vivo divergem significativamente dos backtests. Questões como overfitting e viés de sobrevivência serão abordadas.
+        Uma parte importante deste curso será dedicada a discutir as armadilhas comuns que podem fazer com que os resultados do trading divergam significativamente dos backtests. Questões como overfitting e viés de sobrevivência serão abordadas.
 
         """)
              
@@ -168,7 +169,7 @@ if mode == "Navegação":
 
 #  ====================  Chapter 1  Backtesting e Execução Automática ==============
 
-    elif pagina == "2 . Backtesting e Execução Automática":
+    elif pagina == "2 . Backtesting":
         st.title("Backtesting e Execução Automática")
 
         if subsecao == "Introdução":
@@ -264,7 +265,7 @@ if mode == "Navegação":
 
                 Quando uma empresa realiza um desdobramento de ações (stock split) no formato N-para-1, o preço das ações é dividido por N. Contudo, o número de ações possuídas pelo investidor aumenta proporcionalmente, mantendo o valor total do mercado inalterado. No entanto, durante o backtesting, geralmente analisamos apenas a série de preços, e sem ajustes para refletir o desdobramento, pode ocorrer uma queda abrupta no preço na data de vigência, gerando sinais de negociação incorretos.
 
-                Para corrigir esse problema, é necessário ajustar os preços históricos dividindo-os por N antes da data de vigência. Essa prática também se aplica ao vivo, ajustando os dados históricos antes da abertura do mercado na data relevante. Em casos de agrupamento reverso de ações (reverse split), os preços anteriores devem ser multiplicados por N.
+                Para corrigir esse problema, é necessário ajustar os preços históricos dividindo-os por N antes da data de vigência. Essa prática também se aplica ao teste, ajustando os dados históricos antes da abertura do mercado na data relevante. Em casos de agrupamento reverso de ações (reverse split), os preços anteriores devem ser multiplicados por N.
 
                 Da mesma forma, quando uma empresa paga dividendos, o preço das ações tende a cair pelo valor do dividendo (ausentes outros movimentos de mercado). Novamente, isso pode causar falsos sinais de negociação se os preços históricos não forem ajustados. Antes da data de pagamento do dividendo, deve-se subtrair o valor do dividendo dos preços históricos para refletir com precisão as mudanças no mercado.
 
@@ -379,64 +380,83 @@ if mode == "Navegação":
                 3. **Distribuição de Probabilidade**: Determinamos a distribuição dos retornos sob a hipótese nula, frequentemente assumindo uma distribuição normal.
                 4. **Cálculo do p-valor**: Avaliamos a probabilidade de obter resultados tão extremos quanto os observados no backtest, dada a hipótese nula. Se o p-valor for pequeno (ex.: < 0,01), rejeitamos a hipótese nula, indicando que os resultados são estatisticamente significativos.
 
+
+                """)
+            
+            col1, col2 = st.columns(2)
+            # Exibir a imagem do primeiro gráfico
+            with col1:
+                st.image("img/h_test.png", caption='Link: https://miro.medium.com/v2/resize:fit:640/format:webp/1*gSP6jAp8BNOWW7B_lVNnZw.png', use_column_width=True)
+
+            # Exibir a imagem do segundo gráfico
+            with col2:
+                st.image("img/h_test2.jpg", caption='Link: Este é o gráfico da distribuição dos valores. Link: https://miro.medium.com/v2/resize:fit:1400/format:webp/1*iaCsRW3_kDr6nEX1MrRIRQ.png', use_column_width=True) 
+
+            st.markdown("""                
                 ##### Métodos para Estimar a Distribuição Nula
                 1. **Método Paramétrico**: Assume-se uma distribuição normal para os retornos, com média zero e desvio padrão baseado nos dados amostrais. O índice Sharpe, ajustado pela raiz quadrada do número de dias, é usado para determinar significância com base em valores críticos.
                 2. **Método Monte Carlo**: Gera séries de preços simuladas com as mesmas características estatísticas da série real. A estratégia é aplicada a essas séries simuladas, avaliando a frequência em que o retorno médio supera o retorno do backtest.
                 3. **Método de Simulação de Trades**: Cria conjuntos simulados de negociações com o mesmo número e período médio de manutenção que no backtest, mas distribuídos aleatoriamente nos preços reais. Avalia a proporção de retornos que excedem o resultado do backtest.
+                        """)    
 
+
+            code = '''
+ticker = 'TU'
+start_date = '2004-01-01'
+end_date = '2020-01-01'
+
+
+# 1. Obter os dados do Yahoo Finance
+data = yf.download(ticker, start=start_date, end=end_date)
+data['returns'] = data['Close'].pct_change()
+data.dropna(inplace=True)
+
+# 2. Calcular o retorno de 12 meses
+lookback = 252  # ~12 meses de dias úteis
+holddays = 20   # 1 mês (~20 dias úteis)
+data['12m_returns'] = data['Close'].pct_change(periods=lookback)
+data.dropna(inplace=True)
+
+# 3. Criar sinais de compra e venda
+data['longs'] = data['12m_returns'] > 0
+data['shorts'] = data['12m_returns'] < 0
+
+# 4. Calcular os retornos da estratégia
+positions = np.zeros(len(data))
+for h in range(holddays):
+    long_lag = data['longs'].shift(h).fillna(False).astype(bool)
+    short_lag = data['shorts'].shift(h).fillna(False).astype(bool)
+    positions[long_lag] += 1
+    positions[short_lag] -= 1
+data['strategy_returns'] = positions * data['returns'] / holddays
+
+# Teste de hipótese 1: Hipótese Nula Gaussiana
+test_stat = data['strategy_returns'].mean() / data['strategy_returns'].std() * np.sqrt(len(data))
+p_value_test1 = 1 - norm.cdf(test_stat)
+print("\n=========================\n")
+print("Teste 1: Estatística do Teste =", test_stat, ", P-Valor =", p_value_test1)
+
+====================== Output ============================
+Teste 1: 
+Estatística do Teste = 1.788782524762457
+P-Valor = 0.03682492317744812
+            '''
+            st.code(code, language="python")
+
+            colab_link = "https://colab.research.google.com/drive/1Ev3dz4ZXJJcA1-xQ0T6nQq4E-X59T-Ax?usp=sharing"  # Coloque o link do Colab aqui
+            st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
+
+
+            st.markdown("""                
                 ##### Limitações do Teste de Hipótese
                 O teste de hipótese apresenta limitações, como:
                 - **Dependência da Hipótese Nula**: Resultados variam dependendo da definição da hipótese nula, tornando os testes sensíveis às escolhas iniciais.
                 - **Probabilidade Condicional**: Os testes avaliam a probabilidade do resultado dado que a hipótese nula é verdadeira, mas não o inverso (probabilidade da hipótese nula ser verdadeira dado o resultado).
 
-                Mesmo com limitações, a falha em rejeitar a hipótese nula pode gerar insights valiosos. Por exemplo, distribuições com alta curtose podem ser favoráveis a estratégias de momentum, indicando padrões ocultos no mercado.
-
-                """)
-            code = '''
-            # Importando as bibliotecas necessárias
-            import yfinance as yf
-            import statsmodels.tsa.stattools as adf_test
-
-            # Passo 1: Baixar dados do par de moedas USD/CAD usando o pacote yfinance.
-            # Aqui, escolhemos o intervalo de datas entre 22 de junho de 2007 e 28 de março de 2014.
-            df_usdcad = yf.download('USDCAD=X', start="2007-06-22", end="2014-03-28")
-
-            # Passo 2: Aplicação do teste de Dickey-Fuller Aumentado (ADF) na série temporal
-            # O teste ADF ajuda a verificar se uma série temporal é estacionária ou não.
-            # 'Close' refere-se ao preço de fechamento do par de moedas em cada dia de negociação.
-            result = adf_test.adfuller(df_usdcad['Close'])
-
-            # Passo 3: Exibir os resultados do teste ADF
-            # result[0] contém o valor da estatística do teste ADF.
-            # result[1] contém o valor-p, que indica se a hipótese nula (não estacionariedade) é rejeitada ou não.
-            # result[4] contém os valores críticos, usados para comparar a estatística do teste.
-
-            print(f'Testatística ADF: {result[0]}')  # Exibe a estatística ADF calculada
-            print(f'Valor-p: {result[1]}')  # Exibe o valor-p do teste
-            print(f'Valores Críticos: {result[4]}')  # Exibe os valores críticos para diferentes níveis de confiança
-
-            ====================== Output ============================
-                Testatística ADF: -1.8310737300524096
-                Valor-p: 0.3651471887306743
-                Valores Críticos: {'1%': -3.434120287918905, '5%': -2.8632053717943005, '10%': -2.5676565959447415}
-
-            '''
-            st.code(code, language="python")
-
-            colab_link = "https://colab.research.google.com/drive/1728THYP3eXkGqXEDo1OjXhPiMRY_erqt?usp=sharing"  # Coloque o link do Colab aqui
-            st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
+                Mesmo com limitações, a falha em rejeitar a hipótese nula pode gerar insights valiosos. Por exemplo, distribuições com alta curtose podem ser favoráveis a estratégias de momentum, indicando padrões ocultos no mercado.""") 
 
 
-            col1, col2 = st.columns(2)
-            # Exibir a imagem do primeiro gráfico
-            with col1:
-                st.image("img/h_test.png", caption='Legenda: Este é o gráfico da distribuição dos valores.', use_column_width=True)
 
-                st.image("img/h_test2.jpg", caption='Legenda: Este é o gráfico da distribuição dos valores.', use_column_width=True)
-            # Exibir a imagem do segundo gráfico
-            with col2:
-                print("")
-           
         elif subsecao == "Quando não fazer Backtest em uma estratégia":
 
             st.markdown(r"""
@@ -499,6 +519,50 @@ if mode == "Navegação":
             O trading algorítmico vai além de algoritmos, programação e matemática. É essencial considerar fatores econômicos e estruturais para avaliar se um backtest é preditivo e se sua eficácia pode ser mantida em condições futuras. Consciência dessas questões ajuda a mitigar o risco de confiar excessivamente em modelos baseados em dados históricos que podem não se repetir.
             """)
 
+        elif subsecao == "Conclusão":
+
+            st.markdown("""
+#### **Importância do Backtest**
+- O backtesting é inútil se não for **predicitivo** do desempenho futuro de uma estratégia.
+- Evitar armadilhas no backtesting aumenta a **precisão e confiabilidade** dos resultados.
+
+#### **Eliminando Pitfalls no Backtest**
+- **Evitar Look-Ahead Bias:** Usar a **mesma plataforma** para backtest e execução ao vivo.
+- **Reduzir Data-Snooping Bias:**
+  - Teste fora da amostra (**out-of-sample**).
+  - Validação cruzada (**cross-validation**).
+  - Testes walk-forward (**walk-forward testing**).
+  - Modelos **simples** reduzem o risco de sobreajuste.
+
+#### **Perguntas Críticas para um Backtest Robusto**
+- **Ajustes de preços históricos:**  
+  - O modelo considera **splits** e **dividendos** corretamente?  
+- **Viés de sobrevivência:**  
+  - A estratégia inclui apenas **ações que ainda existem**?  
+- **Uso de dados corretos:**  
+  - Os dados de fechamento vêm da **bolsa primária**?  
+- **Regulações históricas:**  
+  - Em 2008, houve **proibição de short selling** em bancos. O modelo considerou isso?  
+- **Execução realista:**  
+  - A estratégia high-frequency considera **regras de uptick** para shorts?  
+- **Construção correta de spreads:**  
+  - Para futuros, o backtest ajusta os preços corretamente **(diferença de preços vs. retorno)**?  
+- **Granularidade dos dados:**  
+  - Para estratégias intradiárias, o modelo usa **dados de tick** em vez de agregações em barras?  
+- **Testes em diferentes períodos:**  
+  - Estratégias que funcionaram **antes de 2008** podem não funcionar **depois de 2008**.
+
+#### **Significância Estatística no Backtest**
+- **Teste com simulações:**  
+  - Se uma estratégia tem **APR esperado de 10%**, validamos isso rodando **10.000 simulações** com os mesmos parâmetros estatísticos do preço original.
+  - Se **apenas 100 dessas simulações** atingirem APR **≥ 10%**, então a estratégia tem **significância estatística de 1%**.
+- **Teste com permutação aleatória:**  
+  - Se randomizarmos **as datas das entradas das operações**, e apenas **1 em 100 permutações** atingir **APR ≥ 10%**, a estratégia tem **significância estatística de 1%**.
+
+#### **Conclusão**
+- Um backtest confiável requer **testes rigorosos**, ajuste de **dados históricos**, consideração de **regulações do mercado**, e avaliação da **significância estatística** dos resultados.
+""")
+
 
 #  ====================  Chapter 1  Backtesting e Execução Automática ===============
 
@@ -516,7 +580,7 @@ if mode == "Navegação":
         if subsecao == "Introdução":
             st.markdown("""
                         
-            A reversão à média é um conceito que está presente em vários aspectos da natureza, mesmo que muitas vezes não percebamos. Esse fenômeno também aparece em ciências sociais. "Exemplo melhor - Daniel Kahneman, por exemplo, citou o famoso caso da "maldição da capa da Sports Illustrated", que afirma que atletas que aparecem na capa da revista têm maior probabilidade de ter um desempenho ruim na temporada seguinte. A explicação científica para isso é que o desempenho de um atleta pode ser visto como algo distribuído ao redor de uma média. Assim, um desempenho excepcional em um ano (que o coloca na capa da revista) provavelmente será seguido por desempenhos mais próximos da média."
+            A reversão à média é um conceito que se manifesta tanto na natureza quanto nas ciências sociais. Esse fenômeno descreve como resultados extremos tendem, naturalmente, a retornar para um valor médio em medições subsequentes. Um exemplo claro pode ser observado no desempenho acadêmico: um aluno que obtém uma nota excepcionalmente alta em uma prova pode, na avaliação seguinte, apresentar um desempenho mais próximo da sua média habitual. Isso não significa que o aluno perdeu capacidade ou se tornou menos talentoso; ao contrário, o resultado extraordinário provavelmente foi influenciado por uma combinação de esforço, condições favoráveis e, até certo ponto, sorte. Compreender a reversão à média nos ajuda a interpretar dados de forma mais realista e a evitar conclusões precipitadas baseadas em eventos isolados.
                         
             ### A Reversão à Média nos Preços dos Ativos Financeiros
 
@@ -742,45 +806,39 @@ if mode == "Navegação":
 # ----------------------------------------------  
             
             st.divider()
-            st.write(r"""
-            ### Half-Life da Reversão à Média
+            st.markdown(r"""
+### Half-Life da Reversão à Média
 
-            Os testes estatísticos para reversão à média ou estacionaridade são rigorosos, exigindo uma certeza mínima de 90%. No entanto, em trading prático, muitas vezes podemos ser rentáveis com um grau de certeza menor. Nesta seção, vamos explorar uma interpretação alternativa do coeficiente λ na Equação 2.1, o que nos ajuda a entender se seu valor negativo é suficiente para tornar uma estratégia de trading prática, mesmo sem rejeitar a hipótese nula de que seu valor real é zero com 90% de certeza no teste ADF.
+Os testes estatísticos para reversão à média ou estacionaridade são rigorosos, exigindo uma certeza mínima de 90%. No entanto, em trading prático, muitas vezes podemos ser rentáveis com um grau de certeza menor. Nesta seção, vamos explorar uma interpretação alternativa do coeficiente $\lambda$ na 
+$$
+\Delta y(t) = \lambda y(t - 1) + \mu + \beta t + \alpha_1\Delta y(t - 1) + \dots + \alpha_k\Delta y(t - k) + \epsilon_t,
+$$
+o que nos ajuda a entender se seu valor negativo é suficiente para tornar uma estratégia de trading prática, mesmo sem rejeitar a hipótese nula de que seu valor real é zero com 90% de certeza no teste ADF.
 
-            Esse coeficiente, λ, é uma medida do tempo que um preço leva para reverter à média. Para entender essa nova interpretação, podemos transformar a série temporal discreta da Equação 2.1 para uma forma diferencial, onde as variações nos preços são consideradas infinitesimais. Se ignorarmos o drift (βt) e as diferenças defasadas (Δy(t − 1), …, Δy(t − k)) na Equação 2.1, ela se assemelha à fórmula de Ornstein-Uhlenbeck, usada em cálculos estocásticos para descrever processos reversores à média:
+Esse coeficiente, $\lambda$, é uma medida do tempo que um preço leva para reverter à média. Para entender essa nova interpretação, podemos transformar a série temporal discreta da 
+$$
+\Delta y(t) = \lambda y(t - 1) + \mu + \beta t + \alpha_1\Delta y(t - 1) + \dots + \alpha_k\Delta y(t - k) + \epsilon_t,
+$$
+para uma forma diferencial, onde as variações nos preços são consideradas infinitesimais. Se ignorarmos o drift ($\beta t$) e as diferenças defasadas ($\Delta y(t - 1), \dots, \Delta y(t - k)$) na equação acima, ela se assemelha à fórmula de Ornstein-Uhlenbeck, usada em cálculos estocásticos para descrever processos reversores à média:
 
-            \[
-            dy(t) = (λy(t − 1) + μ)dt + dε
-            \]
+$$
+dy(t) = (\lambda y(t - 1) + \mu) \, dt + d\epsilon,
+$$
 
-            onde \( dε \) representa algum ruído Gaussiano. Na forma discreta, obtemos λ por meio de uma regressão linear de Δy(t) contra y(t − 1). Esse valor de λ é mantido na forma diferencial, mas a vantagem de expressá-la assim é que obtemos uma solução analítica para o valor esperado de y(t):
+onde $d\epsilon$ representa algum ruído Gaussiano. Na forma discreta, obtemos $\lambda$ por meio de uma regressão linear de $\Delta y(t)$ contra $y(t - 1)$. Esse valor de $\lambda$ é mantido na forma diferencial, mas a vantagem de expressá-lo assim é que obtemos uma solução analítica para o valor esperado de $y(t)$:
 
-            \[
-            E(y(t)) = y_0 e^{λt} - \frac{μ}{λ}(1 - e^{λt})
-            \]
+$$
+E(y(t)) = y_0 e^{\lambda t} - \frac{\mu}{\lambda}\left(1 - e^{\lambda t}\right).
+$$
 
-            Sabendo que λ é negativo em um processo reversor à média, essa expressão indica que o valor esperado do preço decai exponencialmente para \(- \frac{μ}{λ}\) com uma meia-vida igual a \(-\frac{\log(2)}{λ}\).
+Sabendo que $\lambda$ é negativo em um processo reversor à média, essa expressão indica que o valor esperado do preço decai exponencialmente para $-\frac{\mu}{\lambda}$ com uma meia-vida igual a $-\frac{\ln(2)}{\lambda}$.
 
-            #### Interpretações Úteis do Coeficiente λ para Traders
+#### Interpretações Úteis do Coeficiente $\lambda$ para Traders
 
-            1. **Sinal de λ**: Se λ for positivo, isso significa que a série de preços não é reversora à média, logo, uma estratégia baseada em reversão à média não seria adequada.
-            2. **Magnitude de λ**: Se λ for muito próximo de zero, a meia-vida será longa, o que torna uma estratégia de reversão à média menos lucrativa, já que não conseguiremos realizar muitas operações completas em um período de tempo razoável.
-            3. **Escala Temporal Natural**: λ também define uma escala de tempo natural para vários parâmetros da estratégia. Por exemplo, se a meia-vida é de 20 dias, não deveríamos usar uma janela de 5 dias para calcular uma média móvel ou desvio padrão em uma estratégia de reversão à média. Definir a janela como um múltiplo pequeno da meia-vida tende a ser ideal e evita a otimização exaustiva de um parâmetro baseado no desempenho da estratégia.
-
-            """)
-
-
-            code_3 = '''
-            # Importação da função VarianceRatio da biblioteca arch para realizar o teste de razão de variância
-            from arch.unitroot import VarianceRatio
-
-            # Aplicação do teste de Razão de Variância sobre a coluna 'close' do dataframe df, com defasagem (lag) de 5 períodos
-            vr = VarianceRatio(df['close'], 5)
-
-            # Exibição do sumário dos resultados do teste em formato de texto
-            print(vr.summary().as_text())
-            '''
-            st.code(code_3, language="python")
+1. **Sinal de $\lambda$**: Se $\lambda$ for positivo, isso significa que a série de preços não é reversora à média, logo, uma estratégia baseada em reversão à média não seria adequada.
+2. **Magnitude de $\lambda$**: Se $\lambda$ for muito próximo de zero, a meia-vida será longa, o que torna uma estratégia de reversão à média menos lucrativa, já que não conseguiremos realizar muitas operações completas em um período de tempo razoável.
+3. **Escala Temporal Natural**: $\lambda$ também define uma escala de tempo natural para vários parâmetros da estratégia. Por exemplo, se a meia-vida é de 20 dias, não deveríamos usar uma janela de 5 dias para calcular uma média móvel ou desvio padrão em uma estratégia de reversão à média. Definir a janela como um múltiplo pequeno da meia-vida tende a ser ideal e evita a otimização exaustiva de um parâmetro baseado no desempenho da estratégia.
+""", unsafe_allow_html=False)
 
             colab_link = "https://colab.research.google.com/drive/1728THYP3eXkGqXEDo1OjXhPiMRY_erqt?usp=sharing"  # Coloque o link do Colab aqui
             st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
@@ -788,14 +846,14 @@ if mode == "Navegação":
 # ----------------------------------------------  
             
             st.divider()
-            st.markdown("""
+            st.markdown(r"""
     ### Estratégia de Trading Linear com Reversão à Média
 
     Depois de confirmar que uma série de preços é reversora à média e que sua meia-vida de reversão é curta o suficiente para o nosso horizonte de trading, podemos lucrar com uma estratégia linear simples. Para isso, basta calcular o desvio normalizado do preço em relação à sua média móvel (desvio padrão móvel dividido pelo desvio padrão móvel do preço). A quantidade de unidades desse ativo mantidas na carteira deve ser proporcionalmente negativa em relação a esse desvio normalizado. A janela para a média móvel e o desvio padrão pode ser ajustada para igualar a meia-vida da reversão.
 
     #### Por Que Usar Média Móvel e Desvio Padrão?
 
-    Você pode se perguntar por que usar uma média móvel ou um desvio padrão móvel em uma estratégia de reversão à média. Se uma série de preços é estacionária, seus parâmetros de média e desvio padrão não deveriam ser fixos? Embora, em teoria, a média de uma série de preços estacionária seja fixa, na prática, ela pode mudar lentamente devido a fatores econômicos ou mudanças na gestão corporativa. Já para o desvio padrão, a Equação 2.4 mostra que até mesmo uma série estacionária com \(0 < H < 0.5\) apresenta uma variância crescente com o tempo, ainda que mais lentamente do que em um passeio aleatório geométrico. Assim, ao usar médias e desvios móveis, ajustamos a estratégia a uma média e desvio padrão que evoluem gradativamente, permitindo capturar lucros de maneira mais ágil.
+    Você pode se perguntar por que usar uma média móvel ou um desvio padrão móvel em uma estratégia de reversão à média. Se uma série de preços é estacionária, seus parâmetros de média e desvio padrão não deveriam ser fixos? Embora, em teoria, a média de uma série de preços estacionária seja fixa, na prática, ela pode mudar lentamente devido a fatores econômicos ou mudanças na gestão corporativa. Já para o desvio padrão, até mesmo uma série estacionária com (0 < H < 0.5) apresenta uma variância crescente com o tempo, ainda que mais lentamente do que em um passeio aleatório geométrico. Assim, ao usar médias e desvios móveis, ajustamos a estratégia a uma média e desvio padrão que evoluem gradativamente, permitindo capturar lucros de maneira mais ágil.
 
     #### Importância dos Testes de Estacionaridade e Cálculo da Meia-Vida
 
@@ -970,7 +1028,6 @@ if mode == "Navegação":
                 - **Adição de uma terceira série**: Incluindo o ETF IGE, que representa ações de recursos naturais, o teste foi estendido para três séries.  
                 - **Resultado**: Foram identificadas três relações de cointegração com 95% de certeza, permitindo a formação de múltiplos portfólios estacionários. Os autovalores e autovetores encontrados determinam os hedge ratios para cada portfólio.
 
-                ### Considerações Finais
                 O Johansen test é uma ferramenta poderosa para estratégias de cointegração, especialmente ao lidar com múltiplas séries temporais. Sua independência em relação à ordem das séries e capacidade de identificar todas as combinações cointegradas tornam-no superior a métodos univariados em análises mais complexas.
                 """)
 
@@ -2089,10 +2146,7 @@ As estratégias de momentum intradiário **não sofrem com muitas das desvantage
 As estratégias de momentum intradiário oferecem **vantagens sobre as estratégias interdiárias**, aproveitando fatores como **breakouts, gaps de abertura, mudanças em índices e reequilíbrio de ETFs alavancados**. Além disso, o **trading de alta frequência** desempenha um papel significativo na criação e exploração do momentum de curto prazo.  
 """)
 
-
 # ===================== Chapter 7 Interday Momentum Strategies =============
-
-
 
 
 # ====================================================================================
@@ -2214,14 +2268,10 @@ As estratégias de momentum intradiário oferecem **vantagens sobre as estratég
 
             O **Sistema de Pearson** utiliza a média, desvio padrão, assimetria e curtose da distribuição empírica para ajustá-la a uma das sete distribuições parametrizadas, incluindo Gaussiana, beta, gamma e Student's t. Embora não capture todos os momentos superiores ou distribuições infinitas, é suficiente para evitar viés por excesso de ajuste em dados limitados.
 
-            ### Exemplo prático
-
-            1. **Cálculo inicial**: Usando retornos diários, a alavancagem de Kelly foi calculada como 18,4.
-            2. **Simulação de Monte Carlo**: Baseando-se nos quatro primeiros momentos dos retornos, 100.000 retornos aleatórios foram gerados com o sistema de Pearson usando a função `pearsrnd` do MATLAB.
-            3. **Resultados**: A técnica foi aplicada à estratégia de reversão à média descrita no exemplo 5.1, permitindo uma comparação direta entre a alavancagem de Kelly e os resultados da simulação.
-
-            Essas simulações fornecem insights valiosos para otimizar alavancagem em condições de mercado reais, onde as distribuições de retorno frequentemente não seguem uma forma Gaussiana.
             """)
+            colab_link = "https://colab.research.google.com/drive/1oomGr66P92TigEEDKj5b7bkmaxkHSa_v?usp=sharing"  # Coloque o link do Colab aqui
+            st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
+
 
 
             # ==========================
@@ -2241,11 +2291,9 @@ As estratégias de momentum intradiário oferecem **vantagens sobre as estratég
 
             Apesar dessas limitações, em alguns casos, a otimização direta sobre os retornos históricos pode produzir resultados semelhantes à alavancagem de Kelly e à otimização baseada em Monte Carlo.
 
-            Método Prático
+            #### Método Prático
 
             Usando a mesma estratégia mencionada anteriormente, podemos alterar o programa de otimização para utilizar os retornos históricos  no lugar dos retornos simulados. Embora essa abordagem possa fornecer insights rápidos, é importante interpretar os resultados com cautela devido aos problemas inerentes ao uso exclusivo de dados históricos.
-
-            Considerações Finais
 
             Essa técnica pode ser útil como complemento a métodos mais robustos, como simulações de Monte Carlo, especialmente quando aplicada em conjunto com validações cruzadas ou outros mecanismos para mitigar o viés de ajuste aos dados históricos.
             """)
@@ -2333,10 +2381,6 @@ As estratégias de momentum intradiário oferecem **vantagens sobre as estratég
 
             Em resumo, combinar indicadores como VIX, TED Spread, fluxo de ordens e ativos específicos permite mitigar riscos e aumentar a eficácia de estratégias de trading. A escolha do indicador deve ser validada rigorosamente para evitar vieses e garantir sua confiabilidade.
                         
-            #### Stop Loss
-           
-            Stop loss pode ser utilizado de duas maneiras: a mais comum é para sair de uma posição existente quando o lucro/prejuízo não realizado atinge um limite negativo, permitindo reentradas futuras. A segunda, menos comum, é usar o stop loss para encerrar completamente uma estratégia caso o drawdown ultrapasse um limite, o que é raro e pouco prático. O stop loss é eficaz apenas em mercados sempre abertos, pois gaps de preços após fechamentos podem resultar em perdas maiores. Em condições extremas, como na crise de liquidez durante o flash crash de 2010, o stop loss pode falhar completamente. Para estratégias de reversão à média, o stop loss pode parecer contraditório, pois se espera que os preços voltem ao normal, mas falha ao considerar mudanças permanentes no comportamento do mercado. Caso ocorra uma mudança de regime, o stop loss pode prevenir perdas catastróficas, sendo mais útil se configurado acima do drawdown máximo do backtest. Já estratégias de momentum se beneficiam logicamente do stop loss, pois perdas indicam reversão do momento, justificando a saída ou reversão da posição.
-
             """)
             code_3 = '''
 import numpy as np
@@ -2392,6 +2436,15 @@ print(f"Retorno final: {final_return}%")
 
 
             mostrar_imagem("img/risk_ind.png", "Risk Indicators")
+
+
+            st.divider()
+            st.markdown("""            
+            #### Stop Loss
+           
+            Stop loss pode ser utilizado de duas maneiras: a mais comum é para sair de uma posição existente quando o lucro/prejuízo não realizado atinge um limite negativo, permitindo reentradas futuras. A segunda, menos comum, é usar o stop loss para encerrar completamente uma estratégia caso o drawdown ultrapasse um limite, o que é raro e pouco prático. O stop loss é eficaz apenas em mercados sempre abertos, pois gaps de preços após fechamentos podem resultar em perdas maiores. Em condições extremas, como na crise de liquidez durante o flash crash de 2010, o stop loss pode falhar completamente.
+            
+            Para estratégias de reversão à média, o stop loss pode parecer contraditório, pois se espera que os preços voltem ao normal, mas falha ao considerar mudanças permanentes no comportamento do mercado. Caso ocorra uma mudança de regime, o stop loss pode prevenir perdas catastróficas, sendo mais útil se configurado acima do drawdown máximo do backtest. Já estratégias de momentum se beneficiam logicamente do stop loss, pois perdas indicam reversão do momento, justificando a saída ou reversão da posição.""")
 
         elif subsecao == "Conclusão":
 

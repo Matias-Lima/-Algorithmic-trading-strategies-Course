@@ -55,8 +55,8 @@ if mode == "Navegação":
                 "Introdução",
                 "Trading Pairs",
                 "Bollinger Bands",
-                "Estratégias de Rompimento",
-                "Erros nos dados",
+                "Kalman Filter",
+                "Erros nos Dados",
                 "Conclusão"
             ],
             "5 . Reversão à Média de Ações e ETFs": [
@@ -563,11 +563,9 @@ P-Valor = 0.03682492317744812
 - Um backtest confiável requer **testes rigorosos**, ajuste de **dados históricos**, consideração de **regulações do mercado**, e avaliação da **significância estatística** dos resultados.
 """)
 
-
 #  ====================  Chapter 1  Backtesting e Execução Automática ===============
 
 # ====================================================================================
-
 
 # ====================== Chapter 2 The Basics of Mean Reversion ===============
 
@@ -1237,63 +1235,86 @@ Eigen vectors: [1.03947063 0.13619127] [-1.53822008  0.2337235 ]
         st.title("4 . Estratégias de Reversão à Média")
 
         if subsecao == "Introdução":
-           st.markdown("""
-                **Implementing Mean Reversion Strategies**
+            st.markdown("""
+#### **Implementação de Estratégias de Reversão à Média**
 
-                Estratégias de reversão à média baseiam-se na ideia de que os preços tendem a retornar a um nível médio ao longo do tempo. Embora o capítulo anterior tenha descrito testes estatísticos para identificar séries estacionárias ou cointegradas adequadas, a implementação prática de estratégias de reversão à média não depende exclusivamente de uma verdadeira estacionariedade.
+As estratégias de reversão à média fundamentam-se na premissa de que os preços tendem, ao longo do tempo, a retornar a um valor médio. Embora testes estatísticos no capítulo anterior tenham sido usados para identificar séries estacionárias ou cointegradas, a aplicação prática dessas estratégias não depende exclusivamente da estacionariedade perfeita.
 
-                ### Considerações sobre Reversão à Média
-                1. **Estacionariedade e Cointegração**: Embora ativos individuais raramente sejam estacionários, portfólios de ativos cointegrados (como pares long-short) podem ser explorados. No entanto, a reversão à média também pode ser capturada em períodos curtos ou sazonais, como condições específicas do dia.  
-                - **Exemplo**: Uma série estacionária com um tempo de reversão longo (ex.: 10 anos) pode não ser lucrativa para negociação.  
+##### Considerações Fundamentais
+1. **Estacionariedade e Cointegração**  
+   - Ativos individuais raramente apresentam estacionariedade. No entanto, portfólios formados por ativos cointegrados (como pares long-short) podem ser explorados para capturar oportunidades de reversão à média.  
+   - Além disso, a reversão pode ocorrer em horizontes temporais curtos ou sazonais, como durante condições específicas de um dia.  
+   - *Exemplo*: Uma série com tempo de reversão muito longo (por exemplo, 10 anos) dificilmente será lucrativa para operações de curto prazo.
 
-                2. **Estratégias Simples de Reversão**:  
-                - Uma estratégia linear escalonada compra proporcionalmente ao desvio do preço em relação à média. Apesar de ser conceitualmente simples, ela não é prática devido à necessidade de reequilíbrio constante e poder de compra ilimitado.  
+2. **Estratégias Lineares e seus Desafios**  
+   - Uma abordagem simples pode ser a estratégia linear escalonada, que compra ou vende de forma proporcional ao desvio do preço em relação à média.  
+   - Embora conceitualmente interessante, essa estratégia requer reequilíbrios constantes e pressupõe um poder de compra ilimitado, o que a torna inviável na prática.
 
-                ### Estratégias Práticas
-                1. **Bandas de Bollinger**:  
-                - Uma técnica mais prática para reversão à média, onde limites superiores e inferiores (baseados em desvios-padrão) sinalizam pontos de entrada e saída.  
-                - Variantes incluem múltiplos níveis de entrada e saída ("scaling-in"), permitindo ajustes graduais de posição conforme o preço se afasta ou retorna à média.  
+##### Estratégias Práticas de Implementação
+1. **Bandas de Bollinger**  
+   - Uma técnica prática que utiliza limites superiores e inferiores, definidos a partir do desvio padrão, para indicar pontos de entrada e saída.  
+   - Variantes dessa estratégia permitem múltiplos níveis de entrada e saída (o chamado "scaling-in"), ajustando a posição de forma gradual conforme o preço se afasta ou retorna à média.
 
-                2. **Filtro de Kalman**:  
-                - Utilizado para estimar o hedge ratio e o preço médio em tempo real, permitindo uma modelagem dinâmica de reversão.  
+2. **Filtro de Kalman**  
+   - Ferramenta dinâmica utilizada para estimar, em tempo real, o hedge ratio e o preço médio, proporcionando uma modelagem adaptativa da reversão à média.
 
-                ### Cuidados na Implementação
-                1. **Erros de Dados**: Estratégias de reversão à média são altamente sensíveis a erros nos dados. Pequenos erros podem gerar sinais falsos e prejuízos.  
-                2. **Custos de Transação**: Embora ignorados nos exemplos apresentados, são críticos para avaliar a viabilidade real da estratégia.  
-                3. **Viés de Look-ahead**: Evite usar os mesmos dados para otimizar parâmetros (como o hedge ratio) e para backtesting, pois isso pode inflar resultados e reduzir a utilidade preditiva do modelo.
+##### Cuidados Essenciais na Implementação
+- **Erros de Dados**: Estratégias de reversão à média são altamente sensíveis a erros nos dados. Pequenas imprecisões podem gerar sinais falsos e resultar em perdas.
+- **Custos de Transação**: Embora frequentemente ignorados em exemplos teóricos, os custos de transação são críticos na avaliação da viabilidade prática da estratégia.
+- **Viés de Look-ahead**: É fundamental evitar o uso dos mesmos dados para otimização dos parâmetros (como o hedge ratio) e para backtesting, pois isso pode inflar os resultados e comprometer a eficácia preditiva do modelo.
 
-                ### Conclusão
-                Estratégias de reversão à média requerem uma implementação cuidadosa para evitar armadilhas comuns, como viés de look-ahead e erros de dados. Embora os exemplos apresentados ignorem algumas dessas nuances para simplificar a explicação, os traders devem ajustar esses modelos para aplicações reais e robustas.
-                """)
+Em resumo, a implementação de estratégias de reversão à média exige rigor na gestão dos dados, uma compreensão aprofundada dos custos envolvidos e atenção especial para evitar vieses que possam comprometer os resultados. Traders devem ajustar e testar cuidadosamente esses modelos para assegurar sua robustez e aplicabilidade em condições reais de mercado.
+""")
 
         elif subsecao == "Trading Pairs":
-  
+        
             st.markdown("""
-            ### Trading Pairs Using Price Spreads, Log Price Spreads, or Ratios**
+            ### **Trading Pairs: Uso de Spreads de Preços, Log Spreads ou Ratios**
 
-            Estratégias de reversão à média podem usar spreads de preços, logaritmos de preços ou razões como sinais de negociação. O método tradicional utiliza o valor de mercado do portfólio formado por uma combinação linear de preços, onde os pesos são os hedge ratios derivados de regressões ou do Johansen test. Essa abordagem cria uma série estacionária que pode ser usada como sinal de trading.
+            Estratégias de reversão à média podem ser implementadas utilizando diferentes formas de sinalização, tais como spreads de preços, logaritmos dos preços ou ratios. Cada método possui características específicas e pode ser mais adequado para diferentes cenários de mercado.
 
-            ##### Comparação entre Sinais
-            1. **Price Spreads**:
-            - Simplifica a estratégia ao usar o spread direto entre preços.
-            - Requer hedge ratios fixos, mas pode ser menos eficaz se os preços das ações não estiverem escalados proporcionalmente.
+            ##### 1. Price Spreads
+            - **Definição**: Consiste no cálculo do spread direto entre os preços de dois ativos.  
+            - **Como Funciona**: Um portfólio é criado atribuindo pesos fixos (hedge ratios) aos ativos, geralmente determinados por métodos de regressão ou testes de cointegridade. A diferença resultante entre os preços é monitorada para identificar desvios da média.  
+            - **Vantagens**:  
+            Simplicidade de cálculo e implementação.  
+            Boa aplicação quando os ativos possuem escalas de preços semelhantes.
+            - **Limitações**:  
+            Pode se tornar ineficaz se os ativos não estiverem adequadamente escalonados, pois diferenças absolutas podem distorcer o sinal.
+            - **Exemplo Prático**:  
+            Se dois ativos historicamente se movem de forma correlacionada, um desvio significativo no spread pode indicar uma oportunidade de compra no ativo subvalorizado e venda no ativo sobrevalorizado.
 
-            2. **Log Price Spreads**:
-            - Considera os logaritmos dos preços, criando um portfólio estacionário com pesos de capital constantes.
-            - Exige reequilíbrio frequente para manter as proporções de capital fixas, o que pode aumentar custos operacionais.
+            ##### 2. Log Price Spreads
+            - **Definição**: Em vez de trabalhar com preços absolutos, utiliza-se o logaritmo dos preços para formar o spread.  
+            - **Como Funciona**: O uso de logaritmos tende a estabilizar a variância e criar um portfólio com pesos de capital constantes, o que pode refletir melhor a relação proporcional entre os ativos.
+            - **Vantagens**:  
+            Ajuda a mitigar o efeito de grandes variações absolutas e diferenças de escala entre os preços.  
+            Mantém uma relação de capital mais estável ao longo do tempo.
+            - **Limitações**:  
+            Pode requerer reequilíbrios mais frequentes para garantir que as proporções de capital sejam mantidas, o que pode aumentar os custos operacionais.
+            - **Exemplo Prático**:  
+            Em mercados com alta volatilidade, usar logaritmos pode suavizar os movimentos bruscos e oferecer sinais mais confiáveis para a reversão à média.
 
-            3. **Ratios**:
-            - Útil quando os ativos não são verdadeiramente cointegrados, mas o spread é considerado reversível a curto prazo.
-            - Permite dispensar hedge ratios dinâmicos, simplificando o modelo.
-            - É especialmente vantajoso em cenários onde as diferenças de escala entre preços dificultam o uso de spreads, como no trading de pares com grandes discrepâncias de preço.
+            ##### 3. Ratios
+            - **Definição**: Utiliza a razão entre os preços de dois ativos como sinal de negociação, sem a necessidade de calcular hedge ratios complexos.  
+            - **Como Funciona**: A estratégia baseia-se na premissa de que, mesmo que os ativos não sejam cointegrados, a razão entre seus preços pode se comportar de forma reversível em curto prazo.
+            - **Vantagens**:  
+            Simplifica o modelo ao eliminar a necessidade de ajustar continuamente os hedge ratios.  
+            Pode ser mais robusta quando os ativos apresentam diferenças significativas de escala.
+            - **Limitações**:  
+            Pode não capturar todas as nuances de mercados onde a relação entre os ativos é complexa e não linear.
+            - **Exemplo Prático**:  
+            Em pares de moedas, como EUR/GBP, a relação pode naturalmente funcionar como uma razão. Por outro lado, em pares onde há discrepâncias marcantes (por exemplo, MXN/NOK), utilizar ratios pode evitar a distorção causada pela diferença de escala.
 
-            ##### Exemplos e Aplicações
-            - **GLD e USO**:
-            - Em um exemplo comparativo, spreads de preço com hedge ratios adaptativos superaram o uso de razões como sinais de negociação.
-            - **Trading de Moedas**:
-            - Pairs como EUR.GBP já representam uma razão, enquanto pares como MXN.NOK podem se beneficiar do uso de ratios, devido à ausência de estacionariedade verdadeira.
+            ##### Considerações Finais
+            - **Contexto e Características dos Ativos**:  
+            Cada abordagem deve ser escolhida com base no comportamento histórico e nas propriedades estatísticas dos ativos em questão.  
+            - **Custo e Frequência de Reequilíbrio**:  
+            Estratégias que exigem reequilíbrios frequentes, como os log price spreads, devem ser avaliadas quanto aos custos de transação e à liquidez dos ativos.  
+            - **Robustez dos Sinais**:  
+            É essencial testar cada método em diferentes cenários de mercado para verificar a robustez dos sinais gerados e evitar armadilhas, como ruídos excessivos ou sinais falsos.
 
-            Cada abordagem tem seus méritos dependendo do contexto e das propriedades dos ativos negociados. Spreads de preço são preferíveis em ativos cointegrados, enquanto ratios podem ser mais eficazes em cenários onde os ativos não são verdadeiramente estacionários, simplificando o modelo e evitando reequilíbrios frequentes.
+            Em resumo, a escolha entre price spreads, log price spreads ou ratios dependerá do contexto específico do par de ativos e dos objetivos do trader. Um entendimento aprofundado das vantagens e limitações de cada abordagem possibilita a seleção da estratégia mais adequada para capturar oportunidades de reversão à média.
             """)
 
             colab_link = "https://colab.research.google.com/drive/1ihcWiNwspG_qrUiPeZSstOl3PE9yfPc_?usp=sharing"  # Coloque o link do Colab aqui
@@ -1324,91 +1345,259 @@ Eigen vectors: [1.03947063 0.13619127] [-1.53822008  0.2337235 ]
             st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
 
             st.divider()
+                      
+            st.image("img/bbands.png", caption="Bollinger Bands. Link: https://learn.swyftx.com/wp-content/uploads/2022/07/Fig-3-Riding-the-bands.png")
+            
+            st.divider()
 
             st.markdown("""
-**Does Scaling-in Work?**
+### **Scaling-in: Funciona Mesmo?**
 
-A estratégia de **scaling-in** (ou averaging-in) consiste em aumentar gradualmente a posição em uma estratégia de reversão à média à medida que o preço se afasta da média. Essa abordagem permite capturar lucros parciais sempre que há uma pequena reversão, reduzindo o impacto de mercado para grandes posições e possibilitando ganhos mesmo quando a série de preços não é perfeitamente estacionária. Uma implementação comum usa múltiplos níveis de entrada e saída em **Bollinger Bands**, ajustando pontos de entrada **(entryZscore = 1, 2, 3...N)** e saída **(exitZscore = 0, 1, 2...N-1)**. No entanto, pesquisas sugerem que **scaling-in pode não ser a abordagem mais lucrativa**.
+A estratégia de **scaling-in** (ou averaging-in) envolve aumentar gradualmente a posição em uma estratégia de reversão à média à medida que o preço se afasta da média. Essa abordagem busca capturar ganhos parciais em cada pequena reversão, reduzindo o impacto de mercado para posições maiores e permitindo ganhos mesmo quando a série de preços não é perfeitamente estacionária. Uma implementação comum utiliza múltiplos níveis de entrada e saída com **Bollinger Bands**, definindo pontos de entrada (por exemplo, *entryZscore = 1, 2, 3...N*) e saída (por exemplo, *exitZscore = 0, 1, 2...N-1*). Contudo, pesquisas indicam que **scaling-in pode não ser a abordagem mais lucrativa**.
 
-### Comparação entre "All-in" e "Scaling-in"
-O estudo de **Schoenberg e Corwin (2010)** demonstra que entrar em múltiplos pontos **nunca** é a estratégia mais rentável em backtests. Eles argumentam que existe um nível ótimo único de entrada ("all-in") que maximiza os retornos.  
-O estudo compara três métodos em um cenário onde o preço oscila entre **L1** (nível inicial), **L2** (nível mais baixo antes da reversão) e **F** (preço final esperado):
-1. **All-in at L1**: Compra-se toda a posição em **L1**, independentemente de possíveis quedas adicionais.
-2. **All-in at L2**: Aguarda-se a queda para **L2** antes de comprar toda a posição.
-3. **Scaling-in**: Compra-se parte da posição em **L1** e o restante em **L2**, se o preço cair mais.
+##### Comparação entre Estratégias "All-in" e "Scaling-in"
+O estudo de **Schoenberg e Corwin (2010)** demonstra que entrar em múltiplos pontos nunca supera a estratégia de entrada única otimizada. Em um cenário onde o preço oscila entre:
+- **L1** (nível inicial),
+- **L2** (nível mais baixo antes da reversão) e
+- **F** (preço final esperado),
 
-### Conclusões do Estudo:
-- Se a probabilidade do preço cair até **L2** for baixa (**p < p̂**), **All-in at L1** é mais lucrativo.
-- Se a probabilidade do preço atingir **L2** for alta (**p > p̂**), **All-in at L2** é superior.
-- **Scaling-in nunca é o método mais lucrativo** em comparação com os dois anteriores.
+são comparados três métodos:
+1. **All-in at L1**: Compra total na primeira oportunidade em **L1**, independentemente de quedas subsequentes.
+2. **All-in at L2**: Aguarda a queda para **L2** antes de investir toda a posição.
+3. **Scaling-in**: Compra uma parte da posição em **L1** e o restante em **L2**, caso o preço continue a cair.
 
-### Quando o Scaling-in Ainda Pode Funcionar?
-Apesar das evidências contra scaling-in em backtests, há fatores do mercado real que podem justificar seu uso:
-- **Volatilidade variável**: A hipótese do estudo assume uma volatilidade constante, mas na realidade, volatilidade muda ao longo do tempo, o que pode favorecer scaling-in.
-- **Melhoria no Sharpe Ratio**: Mesmo que os retornos absolutos sejam menores, scaling-in pode reduzir a volatilidade da estratégia e melhorar sua relação risco-retorno.
-- **Melhor desempenho fora da amostra**: Embora scaling-in pareça ineficaz nos dados de treinamento, pode superar o método "all-in" em ambientes de mercado dinâmicos.
+- Se a probabilidade de o preço atingir **L2** for baixa (**p < p̂**), a estratégia **All-in at L1** tende a ser mais lucrativa.
+- Se essa probabilidade for alta (**p > p̂**), **All-in at L2** se mostra superior.
+- Em nenhum cenário, segundo o estudo, o **scaling-in** supera as estratégias de entrada única.
 
-### Conclusão
-Embora **scaling-in** pareça intuitivo e ofereça vantagens como redução do impacto de mercado, estudos sugerem que **"all-in" em um único ponto de entrada otimizado gera retornos superiores**. No entanto, fatores como mudanças na volatilidade podem fazer com que scaling-in tenha um desempenho melhor em condições de mercado reais e fora da amostra. O ideal é testar diferentes abordagens antes de aplicá-las no trading ao vivo.
+##### Possíveis Cenários para o Uso de Scaling-in
+Apesar das evidências contrárias nos backtests, alguns fatores do mercado real podem justificar o uso do scaling-in:
+- **Volatilidade Variável**: O estudo pressupõe volatilidade constante, mas na prática a volatilidade varia ao longo do tempo, o que pode favorecer a entrada gradual.
+- **Melhoria no Sharpe Ratio**: Mesmo com retornos absolutos ligeiramente menores, o scaling-in pode reduzir a volatilidade da estratégia, melhorando a relação risco-retorno.
+- **Desempenho Fora da Amostra**: Embora o scaling-in possa parecer inferior nos dados históricos de treinamento, em mercados dinâmicos ele pode superar o método "all-in" sob determinadas condições.
+
+Em resumo, apesar de parecer intuitivo e oferecer vantagens, como a redução do impacto de mercado, estudos sugerem que a estratégia **"all-in" em um único ponto de entrada otimizado** gera retornos superiores nos backtests. Contudo, fatores como variações na volatilidade e condições de mercado reais podem fazer com que o scaling-in se mostre vantajoso em determinados contextos. O ideal é testar e comparar ambas as abordagens antes de aplicá-las em trading ao vivo.
 """)
 
         elif subsecao == "Kalman Filter":
 
             st.markdown("""
-            Estratégias de rompimento envolvem a identificação e a negociação de momentos em que o preço ultrapassa níveis importantes de suporte ou resistência.
+            Kalman Filter como Regressão Linear Dinâmica
+
+            **Contexto e Problema**  
+            - Para séries de preços cointegradas, o hedge ratio pode ser obtido facilmente com OLS ou o teste de Johansen.  
+            - No entanto, séries reais raramente são perfeitamente estacionárias ou cointegradas.  
+            - Métodos tradicionais que utilizam janelas móveis podem provocar mudanças abruptas e artificiais no hedge ratio.
+
+            **A Solução: Kalman Filter**  
+            - **Definição**: Um algoritmo linear ótimo que atualiza a estimativa de uma variável oculta (neste caso, o hedge ratio) com base no último valor de uma variável observável.  
+            - **Premissas**:  
+                - A relação entre a variável observável e a oculta é linear e sujeita a ruídos gaussianos.  
+                - A variável oculta no tempo t é a mesma de t − 1 acrescida de um ruído, permitindo modelar sua evolução sem um corte arbitrário na ponderação dos dados.
+
+            **Especificação do Modelo**  
+            - **Variáveis e Matrizes**:  
+                - **Variável Observável (y)**: Uma das séries de preço.  
+                - **Variável Oculta (β)**: Representa o hedge ratio (incluindo intercepto e coeficiente angular).  
+                - **Modelo de Transição de Estado**: β(t) = β(t − 1) + ω(t − 1), onde ω é ruído com covariância definida.  
+                - **Equação de Medição**: y(t) = x(t)β(t) + ∊(t), onde x(t) (incluindo uma coluna de uns para o intercepto) atua como o modelo de observação e ∊(t) é ruído gaussiano.
+
+            **Vantagens do Uso do Kalman Filter**  
+            - **Atualização Dinâmica**: Gera um hedge ratio que se ajusta continuamente com a chegada de novos dados, evitando cortes arbitrários.  
+            - **Estimativas Múltiplas**: Além do hedge ratio, o filtro produz estimativas da média (através do intercepto) e da volatilidade (desvio padrão do erro de previsão), substituindo os métodos de médias móveis e bandas de Bollinger.  
+            - **Otimização**: Minimiza o erro quadrático médio das estimativas, sendo a melhor opção se os ruídos realmente seguirem uma distribuição gaussiana.
+
+            - **Aplicação Prática**  
+            - Após definir as variáveis observáveis, ocultas e os modelos (transição de estado e observação), o Kalman Filter é aplicado de forma iterativa para atualizar as estimativas em tempo real.  
+            - Essa abordagem é implementada com pacotes de software que automatizam os cálculos, permitindo que traders se concentrem na análise e aplicação dos sinais.
+
+            Em resumo, o Kalman Filter oferece uma abordagem robusta para estimar dinamicamente o hedge ratio e os parâmetros do spread, superando limitações dos métodos de janelas móveis e ponderações arbitrárias.
             """)
-            mostrar_imagem("https://example.com/imagem_rompimento.png", "Estratégias de Rompimento")
+            
+            colab_link = "https://colab.research.google.com/drive/1ihcWiNwspG_qrUiPeZSstOl3PE9yfPc_?usp=sharing"  # Coloque o link do Colab aqui
+            st.markdown(f"[Clique aqui para editar no Colab]({colab_link})")
 
+            st.divider()
 
-        elif subsecao == "Erros nos dados":
-            st.markdown("""
-**The Danger of Data Errors**
+            st.write(r"""
+### Resumo: Equações Iterativas do Filtro de Kalman
 
-Erros nos dados são especialmente prejudiciais para estratégias de reversão à média, tanto em **backtesting** quanto em **execução ao vivo**. Pequenos erros ou outliers nos preços históricos podem criar oportunidades fictícias de lucro, inflacionando os resultados do backtest. Por exemplo, se um preço erroneamente registrado for muito mais alto do que o real, a estratégia pode sugerir uma venda a descoberto lucrativa que nunca teria ocorrido no mercado real.
+O Filtro de Kalman é um algoritmo recursivo que atualiza de forma dinâmica a estimativa de uma variável oculta (neste caso, o vetor \(\beta\), que pode representar tanto o hedge ratio quanto o intercepto) com base em novas observações. Esse método é dividido em duas etapas principais: **previsão** e **atualização**.
 
-### Impacto nos Backtests
-- **Reversão à Média**: Dados errôneos podem inflacionar lucros artificiais ao registrar preços fora do normal, criando sinais falsos de entrada e saída.  
-- **Estratégias de Momentum**: São menos afetadas, pois erros nos preços podem resultar em ordens de compra seguidas por perdas rápidas, reduzindo a performance do backtest.
+#### 1. Etapa de Previsão
 
-### Problemas em Execução ao Vivo
-- **Erros em Cotações Bid/Ask**: Se um erro inflacionar o preço de compra ou venda, uma estratégia pode enviar ordens erradas e gerar perdas reais.  
-- **Impacto em Pairs Trading e Arbitragem**: Essas estratégias dependem de pequenas diferenças nos preços entre ativos. Um erro em uma das cotações pode aumentar artificialmente o spread e acionar negociações incorretas.  
-  - Exemplo: Se o spread real entre dois ativos for $5, mas um erro fizer parecer que é $6, um trade equivocado pode ser executado, resultando em prejuízo.
+Nesta etapa, o filtro utiliza a estimativa atual para prever o estado e a incerteza (covariância) para o próximo instante, antes de receber a nova medição.
 
-### Mitigação de Erros
-- **Uso de Feeds de Dados Confiáveis**: Dados errados de corretores podem gerar perdas inesperadas. Testes mostraram que feeds de terceiros, como **Bloomberg** ou até **Yahoo! Finance**, podem oferecer maior estabilidade e precisão.  
-- **Cancel-and-Correct Codes**: Alguns provedores utilizam códigos da bolsa para corrigir erros em tempo real, reduzindo impactos negativos na negociação.
+- **Previsão do Estado:**  
+  $$\hat{\beta}(t|t-1) = \hat{\beta}(t-1|t-1)$$  
+  A melhor estimativa do estado no tempo \(t\) é considerada igual à estimativa do tempo anterior. Essa equação reflete a hipótese de que, na ausência de novas informações, o estado se mantém constante.
 
-### Conclusão
-Dados errôneos são um risco oculto, especialmente para estratégias de **reversão à média** e **pairs trading**, onde pequenos erros podem gerar grandes impactos. A escolha de um fornecedor de dados confiável e o monitoramento contínuo da qualidade dos dados são essenciais para evitar perdas desnecessárias e garantir que estratégias sejam eficazes tanto no backtest quanto na execução real.
+- **Previsão da Covariância do Estado:**  
+  $$R(t|t-1) = R(t-1|t-1) + V_w$$  
+  A matriz \(R(t|t-1)\) representa a incerteza na previsão do estado. Ela é atualizada somando a incerteza do estado anterior com o ruído do modelo (\(V_w\)).
+
+- **Previsão da Medição:**  
+  $$\hat{y}(t) = x(t)\hat{\beta}(t|t-1)$$  
+  Estima o valor observado com base na previsão do estado, onde \(x(t)\) atua como o modelo de observação.
+
+- **Previsão da Variância da Medição:**  
+  $$Q(t) = x(t)' R(t|t-1) x(t) + V_e$$  
+  Esta equação calcula a variância esperada do erro da medição, combinando a incerteza do estado com o ruído de medição (\(V_e\)).
+
+#### 2. Etapa de Atualização
+
+Após receber a nova medição \(y(t)\), o filtro ajusta a estimativa do estado e a sua incerteza, combinando a previsão com a nova informação.
+
+- **Erro de Previsão:**  
+  $$e(t) = y(t) - x(t)\hat{\beta}(t|t-1)$$  
+  Representa a diferença entre o valor observado e o valor previsto.
+
+- **Ganho de Kalman:**  
+  $$K(t) = \frac{R(t|t-1)x(t)}{Q(t)}$$  
+  Determina o peso que a nova observação terá na atualização do estado, equilibrando a confiança na previsão e na medição.
+
+- **Atualização do Estado:**  
+  $$\hat{\beta}(t|t) = \hat{\beta}(t|t-1) + K(t)\cdot e(t)$$  
+  A estimativa do estado é ajustada com base no erro de previsão, ponderado pelo ganho de Kalman.
+
+- **Atualização da Covariância do Estado:**  
+  $$R(t|t) = R(t|t-1) - K(t)\cdot x(t)\cdot R(t|t-1)$$  
+  Após a atualização, a incerteza na estimativa é reduzida, refletindo a nova confiança após incorporar a medição.
+                     
+#### Considerações Adicionais
+
+- **Inicialização:**  
+  Normalmente, assume-se que $$\hat{\beta}(1|0) = 0$$ e $$R(0|0) = 0$$, indicando que inicialmente não há conhecimento sobre o estado.
+
+- **Parâmetros de Ruído (\(V_w\) e \(V_e\)):**  
+  - $$V_w = \delta \cdot I$$  
+    onde \(\delta\) é um valor pequeno (por exemplo, \(0.0001\)), o que mantém a atualização estável, similar a uma regressão OLS com coeficientes fixos.  
+  - $$V_e$$ define a incerteza na medição. Valores menores aumentam a confiança na observação, enquanto valores maiores indicam maior ruído.
+
+Essas equações permitem que o Filtro de Kalman atualize continuamente a estimativa do hedge ratio e de outros parâmetros de forma dinâmica e otimizada, sendo uma ferramenta poderosa para modelagem e previsão em tempo real.
+
 """)
+   
+            st.divider()
+
+            st.write(r"""
+### Resumo: Kalman Filter como Modelo de Market Making
+
+Neste modelo, o Filtro de Kalman é aplicado a uma única série de preços com tendência de reversão à média, visando estimar dinamicamente o preço médio e a volatilidade da série. Diferentemente do caso de pares cointegrados (onde se estima o hedge ratio), aqui o preço médio \(m(t)\) é a variável oculta e o preço observado \(y(t)\) é a variável mensurada.
+
+#### Modelagem e Equações
+
+- **Equação de Medição:**  
+  A medição relaciona o preço observado ao preço médio oculto:
+  $$
+  y(t) = m(t) + \epsilon(t)
+  $$
+  onde \(\epsilon(t)\) representa o ruído da medição.
+
+- **Equação de Transição de Estado:**  
+  O modelo assume que o preço médio evolui de forma simples:
+  $$
+  m(t) = m(t-1) + \omega(t-1)
+  $$
+  com \(\omega(t-1)\) representando o ruído do estado.
+
+- **Atualização do Estado:**  
+  Após observar \(y(t)\), a estimativa do preço médio é atualizada conforme:
+  $$
+  m(t|t) = m(t|t-1) + K(t) \Big( y(t) - m(t|t-1) \Big)
+  $$
+  onde \(K(t)\) é o ganho de Kalman.
+
+- **Erro de Previsão e Variância:**  
+  A variância do erro da previsão é dada por:
+  $$
+  Q(t) = \operatorname{Var}(m(t)) + V_e
+  $$
+  e o ganho de Kalman é definido como:
+  $$
+  K(t) = \frac{R(t|t-1)}{R(t|t-1) + V_e}
+  $$
+  A atualização da incerteza do estado é feita com:
+  $$
+  R(t|t) = \big( 1 - K(t) \big) R(t|t-1)
+  $$
+
+#### Considerações Práticas e Aplicações
+
+- **Uso em Market Making:**  
+  Esse modelo é popular entre market makers para atualizar suas estimativas do preço médio de um ativo em tempo real, permitindo que ajustem rapidamente seus preços de oferta e demanda.
+
+- **Incorporação do Tamanho da Ordem:**  
+  Para tornar o modelo mais realista, o erro de medição $V_e$ pode ser ajustado de acordo com o tamanho da ordem $T$. Se $T$ se aproxima de um tamanho de referência $T_{\text{max}}$, a incerteza diminui:
+  $$
+  V_e = R(t|t-1) \left(1 - \frac{T}{T_{\text{max}}}\right)
+  $$
+  Assim, quando  $T = T_{\text{max}}$, $V_e$ é zero, o ganho de Kalman é 1, e o novo preço médio passa a ser exatamente o preço observado. Essa abordagem é análoga a calcular um preço médio ponderado pelo volume e tempo (VWAP).
+
+- **Ferramentas Disponíveis:**  
+  Além da implementação manual, existem códigos em Python e pacotes open-source para facilitar o uso do Filtro de Kalman nesse contexto.
+
+#### Observações Finais
+
+O modelo de market making com Filtro de Kalman oferece uma forma robusta de estimar dinamicamente o preço médio e a volatilidade de um ativo, ajustando o peso dado às novas observações com base em seu tamanho e recência. Essa técnica permite aos market makers reagir de forma mais precisa às mudanças no mercado, integrando informações de volume e tempo para definir um preço "justo" de forma contínua.
+""")
+
+
+
+
+
+
+
+
+
+
+        elif subsecao == "Erros nos Dados":
+            st.markdown("""
+        ### **O Perigo dos Erros nos Dados**
+
+        Erros nos dados podem comprometer significativamente estratégias de reversão à média, tanto em **backtesting** quanto na **execução ao vivo**. Pequenas falhas ou outliers nos preços históricos podem gerar oportunidades fictícias de lucro, inflando os resultados do backtest. Por exemplo, um registro de preço incorreto, que apareça muito acima do valor real, pode induzir a estratégia a sugerir uma venda a descoberto lucrativa que jamais ocorreria no mercado real.
+
+        ##### Impacto nos Backtests
+        - **Reversão à Média**: Dados imprecisos podem criar lucros artificiais, pois preços atípicos geram sinais falsos de entrada e saída.  
+        - **Estratégias de Momentum**: Embora geralmente menos sensíveis, essas estratégias também podem ser afetadas, já que erros podem resultar em ordens de compra que rapidamente se transformam em perdas, prejudicando a performance do backtest.
+
+        ##### Problemas na Execução ao Vivo
+        - **Erros nas Cotações Bid/Ask**: Um erro que inflacione os preços de compra ou venda pode levar a ordens equivocadas, causando perdas reais.  
+        - **Impacto em Pairs Trading e Arbitragem**: Estratégias que dependem de pequenas variações entre os preços dos ativos são particularmente vulneráveis. Um erro em uma das cotações pode aumentar artificialmente o spread, acionando negociações erradas.  
+        - *Exemplo*: Se o spread real entre dois ativos for $5, mas um erro o faça parecer $6, um trade indevido pode ser executado, resultando em prejuízo.
+
+        ##### Mitigação dos Erros
+        - **Utilização de Feeds de Dados Confiáveis**: A escolha de fontes de dados robustas é crucial. Feeds de terceiros, como **Bloomberg** ou **Yahoo! Finance**, geralmente oferecem maior estabilidade e precisão.  
+        - **Mecanismos de Correção em Tempo Real**: Alguns provedores utilizam sistemas de "cancel-and-correct", que ajustam automaticamente os dados quando erros são detectados, minimizando impactos negativos.
+
+        Em resumo, dados errôneos representam um risco significativo para estratégias de **reversão à média** e **pairs trading**, onde pequenas discrepâncias podem ter grandes efeitos. A seleção criteriosa de fornecedores de dados e o monitoramento contínuo da qualidade são essenciais para evitar perdas desnecessárias e assegurar a eficácia das estratégias tanto em backtesting quanto na execução real.
+        """)
 
         elif subsecao == "Conclusão":
             st.markdown("""
         ### Key Points: Mean-Reverting Strategies and Practical Considerations**
 
-        - **Construção de Portfólios**:  
+        **Construção de Portfólios**:  
         - Para um portfólio de reversão à média com um **número fixo de ações**, utilize **séries de preços** para calcular os hedge ratios.  
         - Para um portfólio com **valores de mercado fixos**, utilize **logaritmos dos preços**.  
 
-        - **Escolha entre Spreads e Ratios**:  
+        **Escolha entre Spreads e Ratios**:  
         - Para **moedas e pares cambiais**, o **uso de razões (ratios)** pode ser mais eficaz do que spreads, especialmente quando não há cointegração perfeita.  
 
-        - **Ajustando-se a Mudanças no Mercado**:  
+        **Ajustando-se a Mudanças no Mercado**:  
         - O **hedge ratio, a média e o desvio padrão** podem mudar ao longo do tempo. Para lidar com isso, utilize um **período de look-back móvel** ou um **Filtro de Kalman**.  
 
-        - **Bollinger Bands e Scaling-in**:  
+        **Bollinger Bands e Scaling-in**:  
         - A implementação prática de estratégias lineares de reversão à média pode ser feita com **Bandas de Bollinger** e **scaling-in**.  
         - Embora **scaling-in** nem sempre seja ótimo em backtests, ele pode ser útil no **trading ao vivo**, onde a volatilidade e as probabilidades mudam.  
 
-        - **Uso do Kalman Filter**:  
+        **Uso do Kalman Filter**:  
         - Para atualizar dinamicamente a **expectativa de preço** com base nos últimos negócios (preço e volume), o **Filtro de Kalman** pode ser empregado.  
 
-        - **Impacto de Erros nos Dados**:  
+        **Impacto de Erros nos Dados**:  
         - Erros de dados podem **inflacionar artificialmente os resultados** de backtests em estratégias de **reversão à média**, mas afetam menos estratégias de **momentum**.  
         - Estratégias baseadas em **spreads são altamente sensíveis** a pequenos erros de dados, tanto em backtests quanto em operações ao vivo.  
 
-        ### Conclusão
         A escolha dos métodos corretos para definir hedge ratios, ajustar estratégias e evitar armadilhas como erros de dados pode fazer a diferença entre um modelo teórico viável e uma estratégia prática e rentável no mercado real.
             """)
 
